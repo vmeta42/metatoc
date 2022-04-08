@@ -1,0 +1,74 @@
+apiVersion: idx.inspur.com/v1alpha1
+kind: FileSync
+metadata:
+  name: example-full
+spec:
+  global:
+    mq: NATS
+  nats:
+    ip: "nats-edge.default.svc.cluster.local"
+    port: 4222
+    user: ""
+    password: ""
+    credsSecret: fsc-creds
+  monit:
+    topic: "example.full.monit"
+    encoding: "gbk"
+    hash: 1
+    endMsgTopic: "example.full.monit.end"
+  reader:
+    nodeSelector:
+      kubernetes.io/hostname: centos78-0
+    tolerations:
+    - key: mode
+      value: test
+      effect: NoSchedule
+      operator: Equal
+    labels:
+      mode: test-r
+    image: "filereader:8.1.0-arm"
+    logPath: "/example-full/log"
+    logLevel: "DEBUG"
+    dataTopic: "examplefull"    # streamName
+    threadNum: 1
+    srcPath: "/example-full/src"
+    shadowPath: "/example-full/sha"
+    dirShadowPrefix: "file_dir_info"
+    handleModeAfterRead: "normal"
+    trashPath: "/example-full/trash"
+    incScanMode: 1
+    incScanInterval: 30
+    incQnotifyMode: 1
+    dirLevelUseThread: 3
+    dataSliceSize: "1m"
+    incSkipDays: 0
+    includedFiletype: ""
+    excludedFiletype: ""
+    filepathRegex: ""
+    fmodeRead: 0
+    userRead: 0
+    logsyncMode: 0
+    readerLabel: "202001010000"
+  writer:
+    nodeSelector:
+      kubernetes.io/hostname: centos78-1
+    tolerations:
+    - key: mode
+      value: test
+      effect: NoSchedule
+      operator: Equal
+    labels:
+      mode: test-w
+    image: "filewriter:8.1.0-20210527-centos"
+    dataTopic: "examplefull.examplefull"          # means streamName.consumerName. streamName and consumerName should be the same
+    threadNum: 1
+    rcvPath: "/example-full/rcv"
+    trashPath: "/example-full/trash"
+    logPath: "/example-full/log"
+    logLevel: "DEBUG"
+    fmodeWrite: 0
+    userWrite: 0
+    bisyncShadowPath: ""
+    bisyncMode: 0
+    bigfileSliceCount: 100
+    writerLabel: "202001010000"
