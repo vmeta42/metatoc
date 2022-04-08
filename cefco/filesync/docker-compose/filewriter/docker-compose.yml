@@ -1,0 +1,14 @@
+version: "3"
+services:
+  filewriter:
+    image: filewriter
+    environment:
+      - START_CMD="FileWriter -m start -f /home/filewriter/Filewriter/Job"
+      - STOP_CMD="FileWriter -m stop -f /home/filewriter/Filewriter/Job"
+      - PROCESS_NAME="FileWriter"
+    cap_add:
+      - SYS_PTRACE
+     volumes:
+      - ./Job:/home/filewriter/FileWriter/Job
+  
+

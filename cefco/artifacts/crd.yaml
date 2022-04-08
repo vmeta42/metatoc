@@ -1,0 +1,454 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: filesyncs.idx.inspur.com
+spec:
+  group: idx.inspur.com
+  scope: Namespaced
+  names:
+    kind: FileSync
+    singular: filesync
+    plural: filesyncs
+    shortNames:
+    - fsc
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+    subresources:
+      status: {}
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            required:
+            - global
+            properties:
+              global:
+                description: Global info about filesync
+                type: object
+                properties:
+                  mq:
+                    description: MQ represents the type of message middleware used for data transmission,
+                      and its value is NATS or ROCKETMQ or IMS
+                    type: string
+                    enum:
+                    - NATS
+                    - ROCKETMQ
+                    - IMS
+                    default: NATS
+                required:
+                - mq
+              nats:
+                description: When global.mq is NATS, then it works
+                type: object
+                properties:
+                  ip:
+                    description: The IP for connecting to NATS
+                    type: string
+                  port:
+                    description: The port for connecting to NATS
+                    type: integer
+                    minimum: 1
+                    maximum: 65535
+                    default: 4222
+                  user:
+                    description: The user for connecting to NATS
+                    type: string
+                    default: ""
+                  password:
+                    description: The password for connecting to NATS
+                    type: string
+                    default: ""
+                  credsSecret:
+                    description: The name of the secret which contains creds for NATS
+                    type: string
+                  secretKey:
+                    description: If the secret has more then one item, this option selects which key to use
+                    type: string
+                required:
+                - ip
+                - port
+              monit:
+                description: Monit info about filesync
+                type: object
+                properties:
+                  topic:
+                    description: Monitoring message topic
+                    type: string
+                  encoding:
+                    description: Encoding of file information (including name) in monitoring message
+                    type: string
+                  hash:
+                    description: Whether to send hash value in monitoring message, 
+                      0 means not to send, 1 means to send
+                    type: integer
+                    minimum: 0
+                    maximum: 1
+                    default: 1
+                  endMsgTopic:
+                    description: The ending message topic for monitor
+                    type: string
+                required:
+                - encoding
+                - hash
+                - topic
+              reader:
+                description: A list of servers for creating stream
+                type: object
+                properties:
+                  dataSliceSize:
+                    description: When the file exceeds the size, it is sent in pieces
+                    type: string
+                  dataTopic:
+                    description: Data topic
+                    type: string
+                  dirLevelUseThread:
+                    description: When the number of scanned directory levels reaches a given number, 
+                      multithreading is enabled
+                    type: integer
+                    minimum: 1
+                  dirShadowPrefix:
+                    description: The prefix of the corresponding shadow file in the collection process
+                    type: string
+                  dontCheckDataTopic:
+                    description: 'Whether to ignore checking datatopic. If true, the validity will not
+                      be checked, and the default topic will not be created for synchronization 
+                      when there is no topic existing.'
+                    type: boolean
+                  excludedFiletype:
+                    description: Excluded file types
+                    type: string
+                  filepathRegex:
+                    description: Regular expressions for collecting files or directory names (including paths)
+                    type: string
+                  fmodeRead:
+                    description: Whether to collect file permissions
+                    type: integer
+                    minimum: 0
+                    maximum: 1
+                  handleModeAfterRead:
+                    description: 'The three modes of the file synchronization. "normal": After the 
+                      synchronization, the source file does not do anything, which is the default mode;
+                      "del": After the synchronization, remove the source file; "move": After the 
+                      synchronization, move the source file into the backup directory.
+                      "del" and "move" mode do not change the directory structure in the sync directory.'
+                    type: string
+                    enum:
+                    - normal
+                    - del
+                    - move
+                  image:
+                    description: The image which to use in source node.
+                    type: string
+                  imagePullSecrets:
+                    items:
+                      description: LocalObjectReference contains enough information
+                        to let you locate the referenced object inside the same namespace.
+                      properties:
+                        name:
+                          description: 'Name of the referent. More info: 
+                            https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Add other useful fields. apiVersion, kind, uid?'
+                          type: string
+                      type: object
+                    type: array
+                  incQnotifyMode:
+                    description: Enable notify when in incremental mode. 0 means false, 1 means true.
+                    type: integer
+                    minimum: 0
+                    maximum: 1
+                  incScanInterval:
+                    description: The time interval (in seconds) to turn on the scan function when in incremental mode
+                    type: integer
+                    minimum: 1
+                  incScanMode:
+                    description: Whether to turn on the scan function regularly when it is in incremental mode
+                    type: integer
+                  incSkipDays:
+                    description: In incremental mode, the increment recognition before this number of days is ignored
+                    type: integer
+                    minimum: 0
+                  includedFiletype:
+                    description: Types of files which to be collected
+                    type: string
+                  labels:
+                    additionalProperties:
+                      type: string
+                    type: object
+                  logLevel:
+                    description: Log level
+                    type: string
+                  logPath:
+                    description: Log path
+                    type: string
+                  logPathPVC:
+                    description: Name of PVC which for storing log path
+                    type: string
+                  logsyncMode:
+                    description: Whether to enable log synchronization
+                    type: integer
+                    minimum: 0
+                    maximum: 1
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    description: Select the source node
+                    type: object
+                  readerLabel:
+                    description: The only identification of the operation
+                    type: string
+                  shadowPath:
+                    description: The path where shadow files (files or directories) are stored during collection
+                    type: string
+                  shadowPathPVC:
+                    description: Name of PVC which for storing shadow path
+                    type: string
+                  srcPath:
+                    description: The source path where to collect
+                    type: string
+                  srcPathPVC:
+                    description: Name of PVC which for storing src path
+                    type: string
+                  threadNum:
+                    description: Number of threads in multithreading
+                    type: integer
+                    minimum: 1
+                  tolerations:
+                    items:
+                      description: The pod this Toleration is attached to tolerates
+                        any taint that matches the triple <key,value,effect> using
+                        the matching operator <operator>.
+                      properties:
+                        effect:
+                          description: Effect indicates the taint effect to match.
+                            Empty means match all taint effects. When specified, allowed
+                            values are NoSchedule, PreferNoSchedule and NoExecute.
+                          type: string
+                          enum:
+                          - NoSchedule
+                          - PreferNoSchedule
+                          - NoExecute
+                        key:
+                          description: Key is the taint key that the toleration applies
+                            to. Empty means match all taint keys. If the key is empty,
+                            operator must be Exists; this combination means to match
+                            all values and all keys.
+                          type: string
+                        operator:
+                          description: Operator represents a key's relationship to
+                            the value. Valid operators are Exists and Equal. Defaults
+                            to Equal. Exists is equivalent to wildcard for value,
+                            so that a pod can tolerate all taints of a particular
+                            category.
+                          type: string
+                          enum:
+                          - Exists
+                          - Equal
+                        tolerationSeconds:
+                          description: TolerationSeconds represents the period of
+                            time the toleration (which must be of effect NoExecute,
+                            otherwise this field is ignored) tolerates the taint.
+                            By default, it is not set, which means tolerate the taint
+                            forever (do not evict). Zero and negative values will
+                            be treated as 0 (evict immediately) by the system.
+                          format: int64
+                          type: integer
+                        value:
+                          description: Value is the taint value the toleration matches
+                            to. If the operator is Exists, the value should be empty,
+                            otherwise just a regular string.
+                          type: string
+                      type: object
+                    type: array
+                  trashPath:
+                    description: File recovery (backup) path, it works when handleModeAfterRead is move
+                    type: string
+                  trashPathPVC:
+                    description: Name of PVC which for storing trash path
+                    type: string
+                  userRead:
+                    description: Whether to collect file users and user group information
+                    type: integer
+                    minimum: 0
+                    maximum: 1
+                required:
+                - dataSliceSize
+                - dataTopic
+                - fmodeRead
+                - image
+                - logsyncMode
+                - nodeSelector
+                - srcPath
+                - userRead
+              writer:
+                description: A list of servers for creating stream
+                type: object
+                properties:
+                  bigfileSliceCount:
+                    description: BIGFILE_SLICE_COUNT
+                    type: integer
+                  bisyncMode:
+                    description: BISYNC_MODE
+                    type: integer
+                  bisyncShadowPath:
+                    description: BISYNC_SHADOW_PATH
+                    type: string
+                  dataTopic:
+                    description: Data topic
+                    type: string
+                  dontCheckDataTopic:
+                    description: 'Whether to ignore checking datatopic. If true, the validity will not
+                      be checked, and the default topic will not be created for synchronization 
+                      when there is no topic existing.'
+                    type: boolean
+                  fmodeWrite:
+                    description: Whether writing files and directory permissions
+                    type: integer
+                  image:
+                    description: The image which to use in target node.
+                    type: string
+                  imagePullSecrets:
+                    items:
+                      description: LocalObjectReference contains enough information
+                        to let you locate the referenced object inside the same namespace.
+                      properties:
+                        name:
+                          description: 'Name of the referent. More info: 
+                            https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Add other useful fields. apiVersion, kind, uid?'
+                          type: string
+                      type: object
+                    type: array
+                  labels:
+                    additionalProperties:
+                      type: string
+                    type: object
+                  logLevel:
+                    description: Log level
+                    type: string
+                  logPath:
+                    description: Log Path
+                    type: string
+                  logPathPVC:
+                    description: Name of PVC which for storing log path
+                    type: string
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    description: Select the target node
+                    type: object
+                  rcvPath:
+                    description: When writing for a file, it is the destination directory for receiving,
+                      and other times, it is the temporary file storage directory
+                    type: string
+                  rcvPathPVC:
+                    description: Name of PVC which for storing rcv path
+                    type: string
+                  threadNum:
+                    description: Number of threads in multithreading
+                    type: integer
+                    minimum: 1
+                  tolerations:
+                    items:
+                      description: The pod this Toleration is attached to tolerates
+                        any taint that matches the triple <key,value,effect> using
+                        the matching operator <operator>.
+                      properties:
+                        effect:
+                          description: Effect indicates the taint effect to match.
+                            Empty means match all taint effects. When specified, allowed
+                            values are NoSchedule, PreferNoSchedule and NoExecute.
+                          type: string
+                          enum:
+                          - NoSchedule
+                          - PreferNoSchedule
+                          - NoExecute
+                        key:
+                          description: Key is the taint key that the toleration applies
+                            to. Empty means match all taint keys. If the key is empty,
+                            operator must be Exists; this combination means to match
+                            all values and all keys.
+                          type: string
+                        operator:
+                          description: Operator represents a key's relationship to
+                            the value. Valid operators are Exists and Equal. Defaults
+                            to Equal. Exists is equivalent to wildcard for value,
+                            so that a pod can tolerate all taints of a particular
+                            category.
+                          type: string
+                          enum:
+                          - Exists
+                          - Equal
+                        tolerationSeconds:
+                          description: TolerationSeconds represents the period of
+                            time the toleration (which must be of effect NoExecute,
+                            otherwise this field is ignored) tolerates the taint.
+                            By default, it is not set, which means tolerate the taint
+                            forever (do not evict). Zero and negative values will
+                            be treated as 0 (evict immediately) by the system.
+                          format: int64
+                          type: integer
+                        value:
+                          description: Value is the taint value the toleration matches
+                            to. If the operator is Exists, the value should be empty,
+                            otherwise just a regular string.
+                          type: string
+                      type: object
+                    type: array
+                  trashPath:
+                    description: Recycling (backup) directory
+                    type: string
+                  trashPathPVC:
+                    description: Name of PVC which for storing trash path
+                    type: string
+                  userWrite:
+                    description: Whether to write the user and user group of the files and directory
+                    type: integer
+                    minimum: 0
+                    maximum: 1
+                  writerLabel:
+                    description: The only identification of the operation
+                    type: string
+                required:
+                - dataTopic
+                - fmodeWrite
+                - image
+                - nodeSelector
+                - rcvPath
+                - userWrite
+          status:
+            description: FileSyncStatus is the status for a FileSync resource
+            type: object
+            properties:
+              configmapStatus:
+                type: string
+              observedGeneration:
+                format: int64
+                type: integer
+              readerStatus:
+                type: string
+              writerStatus:
+                type: string
+            required:
+            - configmapStatus
+            - observedGeneration
+    additionalPrinterColumns:
+    - name: Reader-image
+      type: string
+      description: The Reader image of the filesync.
+      jsonPath: .spec.reader.image
+    - name: Reader-status
+      type: string
+      description: The Reader status of the filesync.
+      jsonPath: .status.readerStatus
+    - name: Writer-image
+      type: string
+      description: The Writer image of the filesync.
+      jsonPath: .spec.writer.image
+    - name: Writer-status
+      type: string
+      description: The Writer status of the filesync.
+      jsonPath: .status.writerStatus

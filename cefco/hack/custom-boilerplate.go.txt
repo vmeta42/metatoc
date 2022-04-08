@@ -1,0 +1,11 @@
+/*
+Copyright 2021 The idx Authors.
+
+http://git.inspur.com/middleware/idx-component
+
+### It needs to be supplemented ###
+### It needs to be supplemented ###
+### It needs to be supplemented ###
+### It needs to be supplemented ###
+*/
+

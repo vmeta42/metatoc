@@ -1,0 +1,18 @@
+apiVersion: idx.inspur.com/v1alpha1
+kind: FileSync
+metadata:
+  name: example-mini-writer
+spec:
+  global:
+    mq: NATS
+  nats:
+    ip: "nats-edge.default.svc.cluster.local"
+    port: 4222
+  writer:
+    nodeSelector:
+      kubernetes.io/hostname: centos78-1
+    image: "filewriter:8.1.0-20210527-centos"
+    dataTopic: "examplesingle.examplesingle"    # means streamName.consumerName. streamName and consumerName should be the same
+    rcvPath: "/example-mini-writer/rcv"
+    fmodeWrite: 0
+    userWrite: 0
