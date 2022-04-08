@@ -1,0 +1,27 @@
+ARG BASE_OS
+FROM $BASE_OS as runtime
+
+ARG NAME
+ARG PACKAGENAME
+ARG PROCESS_NAME
+ARG HOMEDIR="/home/${NAME}"
+ENV PATH=$HOMEDIR/$PROCESS_NAME/bin:$PATH
+ENV LD_LIBRARY_PATH=$HOMEDIR/$PROCESS_NAME/lib:$LD_LIBRARY_PATH
+
+
+
+
+# Copy the binaries.
+WORKDIR $HOMEDIR
+COPY  pkg/${PACKAGENAME} ./
+RUN tar -zxvf ${PACKAGENAME}  
+
+
+
+COPY ./entrypoint/entrypoint.sh /
+RUN  chmod 775 /entrypoint.sh
+
+# Add the entrypoint.
+WORKDIR $HOMEDIR
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["help"]

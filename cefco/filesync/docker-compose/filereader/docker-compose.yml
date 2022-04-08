@@ -1,0 +1,14 @@
+version: "3"
+services:
+  filereader:
+    image: filereader
+    environment:
+      - START_CMD="FileReader -m start -f /home/filereader/FileReader/Job -t inc_always"
+      - STOP_CMD="FileReader -m stop"
+      - PROCESS_NAME="FileReader"
+    cap_add:
+      - SYS_PTRACE
+     volumes:
+      - ./Job:/home/filereader/FileReader/Job
+  
+
