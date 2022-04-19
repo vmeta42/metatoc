@@ -16,6 +16,8 @@ module Meta42 {
     const EACCOUNT_HAS_NOT_ACCPETED : u64 = 10001;
     /// The current account must be the admin account 
     const EACCOUNT_IS_NOT_ADMIN : u64 = 10002;
+    /// The duplicated token
+    const EDUPLICATED_TOKEN : u64 = 10003;
 
     //
     // Event for minted tokens
@@ -80,15 +82,16 @@ module Meta42 {
         received_events : EventHandle<ReceivedTokenEvent>
     }
 
-    fun get_admind_address() : address {
+    fun get_admin_address() : address {
         @0x458d623300e797451b3e794a45b41065
     }
     //
     //  Check if a account address is the child of admin account
     //
-    fun assert_mate42_child_account( child : address) {
+    fun assert_mate42_account( account : address) {
         
-        assert(VASP::parent_address(child) == get_admind_address(), EUSER_ISNT_MATE42_ACCOUNT);
+        assert(account == get_admin_address() || VASP::parent_address(account) == get_admin_address(), 
+            EUSER_ISNT_MATE42_ACCOUNT);
     }
 
     fun compute_token_id(token: &Token) : vector<u8> {
@@ -99,18 +102,20 @@ module Meta42 {
     public fun initialize(sig : &signer) {
         let sender = Signer::address_of(sig);
 
-        assert(sender == get_admind_address(), EACCOUNT_IS_NOT_ADMIN);
+        assert(sender == get_admin_address(), EACCOUNT_IS_NOT_ADMIN);
 
         if(!exists<GlobalInfo>(sender))
             move_to<GlobalInfo>(sig, GlobalInfo {
                 minted_events : Event::new_event_handle<MintedTokenEvent>(sig),
                 shared_events : Event::new_event_handle<SharedTokenEvent>(sig)
-            });        
+            });
+
+        accept(sig);        
     }
 
     public fun accept(sig: &signer) {
         let sender = Signer::address_of(sig);
-        assert_mate42_child_account(sender);
+        assert_mate42_account(sender);
 
         if(!exists<AccountInfo>(sender)) {
             move_to<AccountInfo>(sig, AccountInfo {
@@ -125,9 +130,9 @@ module Meta42 {
     fun emit_minted_event(minter: address, token_id: vector<u8>, hdfs_path: vector<u8>)
     acquires GlobalInfo {
         
-        assert(exists<GlobalInfo>(get_admind_address()), 10005);
+        assert(exists<GlobalInfo>(get_admin_address()), 10005);
         
-        let global_info = borrow_global_mut<GlobalInfo>(get_admind_address());
+        let global_info = borrow_global_mut<GlobalInfo>(get_admin_address());
 
         Event::emit_event<MintedTokenEvent>(&mut global_info.minted_events, MintedTokenEvent { token_id, hdfs_path, minter} );
     }
@@ -140,7 +145,7 @@ module Meta42 {
     acquires AccountInfo, GlobalInfo {
         let sender = Signer::address_of(sig);
         
-        assert_mate42_child_account(sender);
+        assert_mate42_account(sender);
 
         accept(sig);
 
@@ -189,9 +194,9 @@ module Meta42 {
     fun emit_shared_token_event(sender: address, receiver: address, token_id: vector<u8>, metadata: vector<u8>) 
     acquires GlobalInfo {
         
-        assert(exists<GlobalInfo>(get_admind_address()), 10005);
+        assert(exists<GlobalInfo>(get_admin_address()), 10005);
         
-        let global_info = borrow_global_mut<GlobalInfo>(get_admind_address());
+        let global_info = borrow_global_mut<GlobalInfo>(get_admin_address());
 
         Event::emit_event<SharedTokenEvent>(&mut global_info.shared_events, SharedTokenEvent { sender, receiver, token_id, metadata});
     }    
@@ -217,7 +222,7 @@ module Meta42 {
     acquires AccountInfo, GlobalInfo {
         let sender = Signer::address_of(sig);        
         
-        assert_mate42_child_account(sender);
+        assert_mate42_account(sender);
 
         assert(exists<AccountInfo>(sender), EACCOUNT_HAS_NOT_ACCPETED);
         assert(exists<AccountInfo>(receiver), EACCOUNT_HAS_NOT_ACCPETED);
@@ -230,6 +235,9 @@ module Meta42 {
         
         // get the account info from receiver
         let receiver_info = borrow_global_mut<AccountInfo>(receiver);
+
+        // ensure that the token is not contained in receiver's account
+        assert(!Vector::contains(&receiver_info.tokens, &token), EDUPLICATED_TOKEN);
 
         // put the token to receiver account
         Vector::push_back<Token>(&mut receiver_info.tokens, token);
