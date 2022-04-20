@@ -12,10 +12,10 @@
 - 支持边缘智能模型下发
 ### 架构
 1、边缘端的数据采集
-![边缘端的数据采集](docs/images/Architecture_collect.jpg). 
+![边缘端的数据采集](https://github.com/vmeta42/metatoc/blob/main/docs/images/Architecture_collect.jpg)
 
 2、Violas合约实现流程
-![边缘端的数据采集](docs/images/Architecture_Violas.png)
+![边缘端的数据采集](https://github.com/vmeta42/metatoc/blob/main/docs/images/Architecture_Violas.png)
 
 ### 安装部署
 ####   CEFCO 
