@@ -12,19 +12,21 @@
 - 支持边缘智能模型下发
 ### 架构
 1、边缘端的数据采集
-![采集端](vx_images/223624814226753.jpg =538x)
-
+https://github.com/vmeta42/metatoc/blob/main/docs/images/Architecture_collect.jpg
 2、Violas合约实现流程
-![（原图）智能合约流程图](vx_images/565104814246919.png =538x)
+https://github.com/vmeta42/metatoc/blob/main/docs/images/Architecture_Violas.png
 ### 安装部署
 ####   CEFCO 
 1、[部署文档](https://github.com/vmeta42/metatoc/tree/main/cefco#readme)
 #### NATS-Kafka 
-1、[部署文档](https://github.com/vmeta42/metatoc/blob/main/nats-kafka/docs/buildandrun.md)
-2、[配置文档](https://github.com/vmeta42/metatoc/blob/main/nats-kafka/docs/config.md)
+1、[部署文档](https://github.com/vmeta42/metatoc/blob/main/nats-kafka/docs/buildandrun.md)  
+
+2、[配置文档](https://github.com/vmeta42/metatoc/blob/main/nats-kafka/docs/config.md)  
+
 3、[监控文档](https://github.com/vmeta42/metatoc/blob/main/nats-kafka/docs/monitoring.md)
 #### move-contracts
-1、[智能合约源码](https://github.com/vmeta42/metatoc/tree/main/move-contracts)
+1、[智能合约源码](https://github.com/vmeta42/metatoc/tree/main/move-contracts)  
+
 2、编译
 Ubuntu 20.04 环境，已安装 Move 语言编译器 move, 执行如下命令
 ```
@@ -32,8 +34,9 @@ move compile meta42.move scripts.move --mode diem
 ```
 会在 build 目录下生成编译后的 meta42.mv 和多个 meta42*.mv脚本
 ### 文档列表
-1、功能介绍
-2、接口文档
+1、[接口文档](https://github.com/vmeta42/metatoc/blob/main/docs/interface_doc.md)  
+
+2、[功能介绍](https://github.com/vmeta42/metatoc/blob/main/docs/introduced_function1.md)
 
 ### Roadmap
 |      时间      |         节点事件         |
@@ -44,7 +47,8 @@ move compile meta42.move scripts.move --mode diem
 |    2022年Q3    |     支持链上数据确权      |
 |    2022年Q4    |     支持链上数据交易      |
 ### 贡献者
- 感谢小伙伴们的积极贡献，点击[贡献者](https://github.com/vmeta42/metatoc/graphs/contributors)查看详情。
+ 感谢小伙伴们的积极贡献，点击[贡献者](https://github.com/vmeta42/metatoc/graphs/contributors)查看详情。  
+ 
 我们非常欢迎更多的贡献者参与共建Meta42项目, 不论是代码、文档，或是其他能够帮助到社区的贡献形式。
 ### 交流
 如果您在使用过程中遇到任何问题，或是有建设性意见，欢迎给我们提[issues](https://github.com/vmeta42/metatoc/issues)。
