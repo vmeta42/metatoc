@@ -1,4 +1,5 @@
 # MetaTOC
+![image](docs/images/MetaToc_logo.png)
 **注意**：开发过程中，master分支可能处于不稳定的甚至中断的状态。 请使用releases分支，来获得稳定的项目文件。
 
 **MetaTOC** 是基于边缘计算的数据采集和模型下的开源项目，是以区块链Violas做为数据去中心化鉴权和追踪的最佳实践。
