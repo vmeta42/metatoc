@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: MetaTOC Server API
+  description: MetaTOC Server API
+
+servers:
+  - url: https://example.io/v1
+
+paths:
+  /signup:
+    get:
+      description: Create a new wallet
+      responses:
+        '200':
+          description: Successfully returned a new private key and a wallet address
+          content:
+            application/json:
+              schema:
+                type: object
+                propertites:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  datas:
+                    type: object
+                    propertites:
+                      address:
+                        type: string
+                      private_key:
+                        type: string
+
+  /paths:
+    post:
+      description: Create a new block on chain with new hdfs path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              propertites:
+                private_key:
+                  type: string
+                path:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Successfully returned when create new block successful
+          content:
+            application/json:
+              schema:
+                type: object
+                propertites:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+    put:
+      description: Share block with other wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              propertites:
+                private_key:
+                  type: string
+                address:
+                  type: string
+                path:
+                  type: string
+      responses:
+        '200':
+          description: Successfully returned when share block with other wallet successful
+          content:
+            application/json:
+              schema:
+                type: object
+                propertites:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+    get:
+      description: Return a list of HDFS resource paths
+      parameters:
+        - name: address
+          in: query
+          description: User wallet address
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: Specifies the page number of the hdfs paths to be display
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Limits the number of items on a page
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully returned a list of HDFS resource paths
+          content:
+            application/json:
+              schema:
+                type: object
+                propertites:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  datas:
+                    type: array
+                    items:
+                      type: string
+
+  /paths/{id}:
+    get:
+      description: Return the detail of data related to HDFS id
+      parameters:
+        - name: id
+          in: path
+          description: HDFS resource path id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully returned the detail of data
+          content:
+            application/json:
+              schema:
+                type: object
+                propertites:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  datas:
+                    type: string
