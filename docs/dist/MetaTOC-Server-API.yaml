@@ -21,15 +21,19 @@ paths:
                 propertites:
                   code:
                     type: integer
+                    example: 0
                   message:
                     type: string
+                    example: 'ok'
                   datas:
                     type: object
                     propertites:
                       address:
                         type: string
+                        example: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
                       private_key:
                         type: string
+                        example: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
   /paths:
     post:
