@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS user;
+
+CREATE TABLE user (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+       wallet_address TEXT UNIQUE NOT NULL,
+       private_key TEXT UNIQUE NOT NULL
+);
