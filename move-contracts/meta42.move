@@ -43,7 +43,7 @@ module Meta42 {
         metadata :  vector<u8>
     }
     //
-    //  Event for sent token
+    //  Event for sent tokens
     //  held under the user account 
     //
     struct SentTokenEvent has drop, store {        
@@ -165,7 +165,7 @@ module Meta42 {
         Event::emit_event<MintedTokenEvent>(&mut account_info.minted_events, MintedTokenEvent { token_id, hdfs_path, minter:sender });       
     }   
     //
-    //   Get token index from id
+    //   Get token index by id
     //
     fun get_token_index_by_id(owner: address, token_id: vector<u8>) : Option<u64> 
     acquires AccountInfo {
@@ -239,17 +239,17 @@ module Meta42 {
         // ensure that the token is not contained in receiver's account
         assert(!Vector::contains(&receiver_info.tokens, &token), EDUPLICATED_TOKEN);
 
-        // put the token to receiver account
+        // put the token into receiver account
         Vector::push_back<Token>(&mut receiver_info.tokens, token);
         
-        // emit shared event to global info
+        // emit the shared event to global info
         emit_shared_token_event(sender, receiver, copy token_id, copy metadata);
         
-        // emit sent event to sender's account
+        // emit the sent event to sender's account
         Event::emit_event<SentTokenEvent>(&mut borrow_global_mut<AccountInfo>(sender).sent_events, 
                                         SentTokenEvent { receiver, token_id: copy token_id, metadata: copy metadata });
         
-        // Emit received event to receiver's account
+        // Emit the received event to receiver's account
         Event::emit_event<ReceivedTokenEvent>(&mut borrow_global_mut<AccountInfo>(receiver).received_events, 
                                         ReceivedTokenEvent {sender, token_id, metadata});
     }
