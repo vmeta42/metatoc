@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: MetaTOC Server API
+  description: MetaTOC Server API
+
+servers:
+  - url: https://example.io/v1
+
+paths:
+  /signup:
+    get:
+      description: Create a new wallet
+      responses:
+        '200':
+          description: Successfully returned a new private key and a wallet address
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: ok
+                  datas:
+                    type: object
+                    properties:
+                      address:
+                        type: string
+                        example: wallet.address
+                      private_key:
+                        type: string
+                        example: wallet.private.key
+
+  /paths:
+    post:
+      description: Create a new block on chain with new hdfs path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                private_key:
+                  type: string
+                  example: wallet.private.key
+                path:
+                  type: string
+                  example: /HDFS/storage/path
+                content:
+                  type: string
+                  example: content.of.the.path.HDFS.storaged
+      responses:
+        '200':
+          description: Successfully returned when create new block successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: ok
+    put:
+      description: Share block with other wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                private_key:
+                  type: string
+                  example: wallet.private.key
+                address:
+                  type: string
+                  example: wallet.address
+                path:
+                  type: string
+                  example: /HDFS/storage/path
+      responses:
+        '200':
+          description: Successfully returned when share block with other wallet successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: ok
+    get:
+      description: Return a list of HDFS resource paths
+      parameters:
+        - name: address
+          in: query
+          description: User wallet address
+          schema:
+            type: string
+            example: /HDFS/storage/path
+        - name: offset
+          in: query
+          description: Specifies the page number of the hdfs paths to be display
+          schema:
+            type: integer
+            example: 0
+        - name: limit
+          in: query
+          description: Limits the number of items on a page
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: Successfully returned a list of HDFS resource paths
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: ok
+                  datas:
+                    type: array
+                    items:
+                      type: string
+                      example: /HDFS/storage/path
+
+  /paths/{id}:
+    get:
+      description: Return the detail of data related to HDFS id
+      parameters:
+        - name: id
+          in: path
+          description: HDFS resource path id
+          required: true
+          schema:
+            type: string
+            example: /HDFS/storage/path
+      responses:
+        '200':
+          description: Successfully returned the detail of data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: ok
+                  datas:
+                    type: string
+                    example: content.of.the.path.HDFS.storaged

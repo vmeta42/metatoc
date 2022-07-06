@@ -1,5 +1,6 @@
 ![image](docs/images/MetaToc_logo.png)  
 
+![image](https://img.shields.io/badge/license-MIT-green)   
 # MetaTOC
 **注意**：开发过程中，master分支可能处于不稳定的甚至中断的状态。 请使用releases分支，来获得稳定的项目文件。
 
