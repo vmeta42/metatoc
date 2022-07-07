@@ -19,3 +19,10 @@ do
 	echo $file
 	python3 ./violas_parse_code.py ./violas_data $file
 done
+
+
+for file in $(ls ./metatoc/move-contracts/compiled/modules/*.mv)
+do
+	echo $file
+	python3 ./violas_parse_code.py ./violas_data $file
+done
