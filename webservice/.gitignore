@@ -1,3 +1,5 @@
 Pipfile
 Pipfile.lock
-instance/
+instance/*
+diem
+violas_client
