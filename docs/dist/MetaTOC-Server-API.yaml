@@ -79,7 +79,7 @@ paths:
           description: User wallet address
           schema:
             type: string
-            example: /HDFS/storage/path
+            example: wallet.address
         - name: offset
           in: query
           description: Specifies the page number of the hdfs paths to be display
