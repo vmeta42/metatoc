@@ -1,9 +1,8 @@
 import json
-from ResultCode import ResultCode
 
 class Response():
     def __init__(self):
-        self.code = ResultCode.SUCCESSFUL;
+        self.code = 0;
         self.message = "ok";
         self.data = {}
 

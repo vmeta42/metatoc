@@ -7,8 +7,6 @@ from flask import (
 from flaskr.db import get_db
 from flaskr.response import Response
 
-from ResultCode import ResultCode
-
 bp = Blueprint("block", __name__);
 
 @bp.route("/paths", methods = ["POST", "GET", "PUT"])
@@ -80,19 +78,19 @@ def GetPathByAddress(hdfs_path):
     resp = Response();
     address = request.args.get("address");
 
-    db = get_db()
+    db = get_db();
 
     token = db.execute(
-        "SELECT token_name "
+        "SELECT * "
         "FROM transactions "
         "WHERE (from_address=? or to_address=?) "
         "AND token_name=?",
         (address, address, hdfs_path)
-    ).fetchone();
+    ).fetchall();
 
     if token is None:
-        resp.setCode(ResultCode.RESULT_DATA_NONE)
-
+        resp.setData({"data_path": ""});
     else:
-        redirect("")
+        resp.setData({"data_path": "http://hdfs/file/url"});
+
     return jsonify(str(resp));
