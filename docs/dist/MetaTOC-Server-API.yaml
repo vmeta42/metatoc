@@ -185,4 +185,4 @@ paths:
                     properties:
                       data_path:
                         type: string
-                        example: content.of.the.path.HDFS.storaged
+                        example: http://hdfs/file/url
