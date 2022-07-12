@@ -25,7 +25,7 @@ paths:
                   message:
                     type: string
                     example: ok
-                  datas:
+                  data:
                     type: object
                     properties:
                       address:
@@ -106,7 +106,7 @@ paths:
                   message:
                     type: string
                     example: ok
-                  datas:
+                  data:
                     type: array
                     items:
                       type: string
