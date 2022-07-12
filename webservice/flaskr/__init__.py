@@ -20,10 +20,12 @@ def create_app(test_config = None):
         pass;
 
     from . import db
-    db.init_app(app)
+    db.init_app(app);
 
-    @app.route("/signup")
-    def signup():
-        return "signup successful!";
+    from . import wallet
+    app.register_blueprint(wallet.bp);
+
+    from . import block
+    app.register_blueprint(block.bp)
 
     return app;

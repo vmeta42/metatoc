@@ -25,7 +25,7 @@ paths:
                   message:
                     type: string
                     example: ok
-                  datas:
+                  data:
                     type: object
                     properties:
                       address:
@@ -48,6 +48,9 @@ paths:
                 private_key:
                   type: string
                   example: wallet.private.key
+                address:
+                  type: string
+                  example: wallet.address
                 path:
                   type: string
                   example: /HDFS/storage/path
@@ -68,38 +71,6 @@ paths:
                   message:
                     type: string
                     example: ok
-    put:
-      description: Share block with other wallet
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                private_key:
-                  type: string
-                  example: wallet.private.key
-                address:
-                  type: string
-                  example: wallet.address
-                path:
-                  type: string
-                  example: /HDFS/storage/path
-      responses:
-        '200':
-          description: Successfully returned when share block with other wallet successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    example: 0
-                  message:
-                    type: string
-                    example: ok
     get:
       description: Return a list of HDFS resource paths
       parameters:
@@ -108,7 +79,7 @@ paths:
           description: User wallet address
           schema:
             type: string
-            example: /HDFS/storage/path
+            example: wallet.address
         - name: offset
           in: query
           description: Specifies the page number of the hdfs paths to be display
@@ -135,23 +106,66 @@ paths:
                   message:
                     type: string
                     example: ok
-                  datas:
+                  data:
                     type: array
                     items:
                       type: string
                       example: /HDFS/storage/path
 
-  /paths/{id}:
+    put:
+      description: Share block with other wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                private_key:
+                  type: string
+                  example: wallet.private.key
+                from_address:
+                  type: string
+                  example: from.wallet.address
+                to_address:
+                  type: string
+                  example: to.wallet.address
+                token_name:
+                  type: string
+                  example: transfer.token.name
+      responses:
+        '200':
+          description: Successfully returned when share block with other wallet successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: ok
+
+  /paths/{hdfs_path}:
     get:
-      description: Return the detail of data related to HDFS id
+      description: Return the detail of data related to HDFS path
       parameters:
-        - name: id
+        - name: hdfs_path
           in: path
           description: HDFS resource path id
           required: true
           schema:
             type: string
             example: /HDFS/storage/path
+        - name: address
+          in: query
+          description: wallet address
+          required: true
+          schema:
+            type: string
+            example: wallet.address
       responses:
         '200':
           description: Successfully returned the detail of data
@@ -166,6 +180,9 @@ paths:
                   message:
                     type: string
                     example: ok
-                  datas:
-                    type: string
-                    example: content.of.the.path.HDFS.storaged
+                  data:
+                    type: object
+                    properties:
+                      data_path:
+                        type: string
+                        example: http://hdfs/file/url
