@@ -2,35 +2,25 @@ from sys import path
 
 from diem.utils import account_address
 from violas_client.client import Client
-from violas_client.vtypes.contants import server_url
 from violas_client.vtypes.local_account import LocalAccount
 
 from flask import current_app, g
 
-SERVER="http://124.251.110.220:50001";
+SERVER = "http://124.251.110.220:50001";
+ROOT_PRIVATE_KEY = "7b5a50c2caec5921b7b268cc08c2ce754921e3572aa2f68eddd5824888958b5b";
+VASP_PRIVATE_KEY = "346de128de4a6b69bd281ffbd19157fe19272a2d8608ef64708026580aeab11a";
 
 class WalletClient():
     def __init__(self):
-        self.cli = Client(server_url=SERVER);
-        try:
-            with current_app.open_resource("instance/wallet.key", "r") as f:
-                self.p_vasp = LocalAccount.from_private_key_hex(f.read());
-        except FileNotFoundError:
-            self.p_vasp = LocalAccount.generate();
-            self.cli.create_parent_vasp(self.p_vasp.account_address, self.p_vasp.auth_key.prefix(), "VLS", b"metatoc");
-            self.cli.meta42_accept(self.p_vasp);
-
-            with open("./instance/wallet.key", "a") as f:
-                f.write(self.p_vasp.public_key_bytes.hex());
-
-        print(self.p_vasp.account_address, self.p_vasp.public_key_bytes.hex());
+        self.cli = Client(server_url=SERVER, root_private=ROOT_PRIVATE_KEY);
+        self.p_vasp = LocalAccount.from_private_key_hex(VASP_PRIVATE_KEY);
 
     def GetNewAccount(self):
         account = LocalAccount.generate();
         self.cli.create_child_vasp(self.p_vasp, account.account_address, account.auth_key.prefix());
         self.cli.meta42_accept(account);
 
-        return account.account_address, account.public_key_bytes.hex();
+        return account.account_address.to_hex(), account.public_key_bytes.hex();
 
     def MintNewToken(self, private_key, token):
         account = LocalAccount.from_private_key_hex(private_key);
