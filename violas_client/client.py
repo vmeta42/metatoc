@@ -5,7 +5,7 @@ from vtypes.local_account import LocalAccount
 from diem.diem_types import AccountAddress
 from diem.diem_types import ChainId
 from vtypes.account_state import AccountState
-from vtypes.contants import VLS, server_url, root_private
+from vtypes.contants import VLS
 from vtypes.transaction import TransactionView
 from typing import Optional
 from diem.bcs import serialize, deserialize
@@ -18,7 +18,7 @@ import typing
 
 
 class Client():
-    def __init__(self, server_url):
+    def __init__(self, server_url, root_private):
         self._cli = DiemClient(server_url)
         self._root_account = LocalAccount.from_dict(
             {
