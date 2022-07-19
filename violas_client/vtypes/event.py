@@ -1,5 +1,5 @@
-from canoser import Struct, Uint64, DelegateT, BytesT
-from move_core_types.account_address import AccountAddress
+from ..canoser import Struct, Uint64, DelegateT, BytesT
+from ..move_core_types.account_address import AccountAddress
 
 class EventKey(DelegateT):
     LENGTH = AccountAddress.LENGTH + 8

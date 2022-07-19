@@ -1,4 +1,4 @@
-from canoser.base import Base
+from .base import Base
 
 class TupleT(Base):
 

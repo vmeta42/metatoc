@@ -1,6 +1,6 @@
-from canoser import Struct
-from vtypes.move_resource import MoveResource, StructTag
-from vtypes.event import EventHandle
+from ..canoser import Struct
+from .move_resource import MoveResource, StructTag
+from .event import EventHandle
 
 
 class TokenResource(Struct):

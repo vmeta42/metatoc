@@ -1,6 +1,6 @@
-from canoser import Struct
-from vtypes.account_info import AccountInfoResource, GlobalInfoResource
-from vtypes.contants import CORE_CODE_ADDRESS
+from ..canoser import Struct
+from .account_info import AccountInfoResource, GlobalInfoResource
+from .contants import CORE_CODE_ADDRESS
 
 class AccountState(Struct):
     _fields = [

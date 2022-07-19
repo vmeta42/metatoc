@@ -1,4 +1,4 @@
-from canoser import Struct
+from ..canoser import Struct
 
 class AccountStateBlobView(Struct):
     _fields = [

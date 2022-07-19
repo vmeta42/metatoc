@@ -1,5 +1,5 @@
-from canoser.base import Base
-from canoser.int_type import Uint32, Uint8
+from .base import Base
+from .int_type import Uint32, Uint8
 import struct
 
 

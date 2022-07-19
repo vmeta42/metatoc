@@ -1,5 +1,5 @@
-from canoser.types import type_mapping
-from canoser.base import Base
+from .types import type_mapping
+from .base import Base
 
 
 class DelegateT(Base):

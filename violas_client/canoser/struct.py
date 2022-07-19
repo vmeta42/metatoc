@@ -1,6 +1,6 @@
-from canoser.base import Base
-from canoser.cursor import Cursor
-from canoser.types import type_mapping
+from .base import Base
+from .cursor import Cursor
+from .types import type_mapping
 import json
 
 class TypedProperty:

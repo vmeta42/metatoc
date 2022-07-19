@@ -1,5 +1,5 @@
-from canoser.base import Base
-from canoser.rust_optional import RustOptional
+from .base import Base
+from .rust_optional import RustOptional
 
 class Optional(RustOptional):
     _type = None

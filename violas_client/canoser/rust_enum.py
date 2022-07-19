@@ -1,8 +1,8 @@
-from canoser.base import Base
-from canoser.cursor import Cursor
-from canoser.types import type_mapping
-from canoser.int_type import Uint32
-from canoser.struct import TypedProperty
+from .base import Base
+from .cursor import Cursor
+from .types import type_mapping
+from .int_type import Uint32
+from .struct import TypedProperty
 import json
 
 #TODO: how to support discontinuous index in enum

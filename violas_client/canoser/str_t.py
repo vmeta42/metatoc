@@ -1,5 +1,5 @@
-from canoser.int_type import Uint32
-from canoser.base import Base
+from .int_type import Uint32
+from .base import Base
 
 class StrT(Base):
     @classmethod
