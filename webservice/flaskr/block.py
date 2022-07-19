@@ -1,11 +1,13 @@
 import string
+import os
 
 from flask import (
     Blueprint, flash, g, redirect, request, url_for, jsonify
 )
 
-from flaskr.db import get_db
-from flaskr.response import Response
+from .db import get_db
+from .response import Response
+from .wallet_client import WalletClient
 
 bp = Blueprint("block", __name__);
 
@@ -21,12 +23,16 @@ def paths():
         path = params["path"];
         content = params["content"];
 
+        cli = WalletClient();
+        cli.MintNewToken(private_key, path);
+
         db.execute(
             "INSERT INTO transactions (transaction_type, from_address, token_name) "
             "VALUES (?, ?, ?)",
             ("CREATE", address, path)
         );
         db.commit();
+
 
     elif request.method == "GET":
         address = request.args.get("address");
@@ -64,6 +70,9 @@ def paths():
         to_address = params["to_address"];
         token_name = params["token_name"];
 
+        cli = WalletClient();
+        cli.ShareToken(private_key, to_address, token_name);
+
         db.execute(
             "INSERT INTO transactions (transaction_type, from_address, to_address, token_name) "
             "VALUES (?, ?, ?, ?)",
@@ -76,7 +85,15 @@ def paths():
 @bp.route("/paths/<path:hdfs_path>", methods = ["GET"])
 def GetPathByAddress(hdfs_path):
     resp = Response();
+
     address = request.args.get("address");
+
+    cli = WalletClient();
+    if not cli.GetTokens(address, hdfs_path):
+        resp.setCode(20001);
+        resp.setMessage("PREMISSION_NO_ACCESS");
+
+        return jsonify(str(resp));
 
     db = get_db();
 
