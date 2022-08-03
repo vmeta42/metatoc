@@ -57,7 +57,15 @@ func init() {
 				if len(result.Data.Paths) > 0 {
 					fmt.Printf("There are %d pieces of data\n", len(result.Data.Paths))
 					for index, value := range result.Data.Paths {
-						fmt.Printf("The %dth data is [%s]\n", index+1, value)
+						if index == 0 {
+							fmt.Printf("The %dst data is [%s]\n", index+1, value)
+						} else if index == 1 {
+							fmt.Printf("The %dnd data is [%s]\n", index+1, value)
+						} else if index == 2 {
+							fmt.Printf("The %drd data is [%s]\n", index+1, value)
+						} else {
+							fmt.Printf("The %dth data is [%s]\n", index+1, value)
+						}
 					}
 				} else {
 					fmt.Println("no data")

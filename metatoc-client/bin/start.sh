@@ -45,4 +45,4 @@ fi
 #exit 0
 
 echo "Run metatoc-client..."
-docker run --rm -ti --env METATOC_WEBSERVICE_ADDRESS=$metatoc_webservice_host:$metatoc_webservice_port --env METATOC_NATS_ADDRESS=$metatoc_nats_host:$metatoc_nats_port metatoc-client:latest
+docker run --rm -ti -v $PWD/../json:/json --env METATOC_WEBSERVICE_ADDRESS=$metatoc_webservice_host:$metatoc_webservice_port --env METATOC_NATS_ADDRESS=$metatoc_nats_host:$metatoc_nats_port metatoc-client:latest

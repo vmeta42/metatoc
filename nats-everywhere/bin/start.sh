@@ -64,7 +64,7 @@ if [ $nats0everywhere_exists -eq 2 ]; then
     echo "Nats-everywhere exists!"
 else
     echo "Make nats-everywhere..."
-    docker build --tag nats-everywhere:latest --build-arg NATS_URL=nats://$nats_host:$nats_posrt --build-arg NATS_SUBJECT=CONSUMER_METATOC.* --build-arg NATS_DURABLE=CONSUMER_METATOC ../.
+    docker build --tag nats-everywhere:latest ../.
 fi
 #exit 0
 
@@ -74,6 +74,6 @@ if [ $nats0everywhere_running -eq 2 ]; then
     echo "Nats-everywhere running!"
 else
     echo "Run nats-everywhere..."
-    docker run --name nats-everywhere --rm -ti -d -v $PWD/../logs:/opt/logs nats-everywhere:latest
+    docker run --name nats-everywhere --rm -ti -d -v $PWD/../logs:/logs --env NATS_URL=nats://$nats_host:$nats_port --env NATS_SUBJECT=CONSUMER_METATOC.* --env NATS_DURABLE=CONSUMER_METATOC nats-everywhere:latest
 fi
 #exit 0

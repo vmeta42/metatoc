@@ -83,13 +83,14 @@ func (server *NATSBridge) sendRequest(messageDataMap map[string]interface{}) err
 		return err
 	}
 
-	server.RecordResponseBody(body)
+	server.RecordResponseBody(body, "sendRequest")
 	return nil
 }
 
-func (server *NATSBridge) RecordResponseBody(body []byte) {
+func (server *NATSBridge) RecordResponseBody(body []byte, fileName string) {
 	//filePath := fmt.Sprintf("./logs/%s.log", time.Now().Format("20060102"))
-	filePath := fmt.Sprintf("/opt/logs/%s.log", time.Now().Format("20060102"))
+	//filePath := fmt.Sprintf("/opt/logs/%s.log", time.Now().Format("20060102"))
+	filePath := fmt.Sprintf("./logs/%s.log", fileName)
 	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
 		log.Println(err.Error())
