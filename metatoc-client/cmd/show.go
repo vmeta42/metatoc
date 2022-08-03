@@ -28,7 +28,7 @@ func init() {
 						if signup.Message == "ok" {
 							noData = false
 							if index == 0 {
-								fmt.Printf("There are %d pieces of data\n", len(contentSlice))
+								fmt.Printf("There are %d pieces of data\n", len(contentSlice)-1)
 								fmt.Printf("The %dst data: address is [%s], private key is [%s]\n", index+1, signup.Data.Address, signup.Data.PrivateKey)
 							} else if index == 1 {
 								fmt.Printf("The %dnd data: address is [%s], private key is [%s]\n", index+1, signup.Data.Address, signup.Data.PrivateKey)
