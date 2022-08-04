@@ -25,7 +25,7 @@ func init() {
 				for index, value := range contentSlice {
 					signup := Signup{}
 					if err = json.Unmarshal([]byte(value), &signup); err == nil {
-						if signup.Message == "ok" {
+						if signup.Message == "SUCCESSFUL" {
 							noData = false
 							if index == 0 {
 								fmt.Printf("There are %d pieces of data\n", len(contentSlice)-1)

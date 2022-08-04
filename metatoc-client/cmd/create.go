@@ -17,7 +17,7 @@ type Create struct {
 func init() {
 	App.AddCommand(&grumble.Command{
 		Name: "create",
-		Help: "create a new block on chain with new hdfs path",
+		Help: "create a new block on chain with new HDFS path",
 		Flags: func(f *grumble.Flags) {
 			f.String("k", "key", "", "wallet private key")
 			f.String("a", "address", "", "wallet address")
@@ -66,7 +66,7 @@ func init() {
 			js, _ := nc.JetStream(nats.PublishAsyncMaxPending(256))
 			js.Publish("CONSUMER_METATOC.PATHS", publishDataString)
 
-			fmt.Println("ok")
+			fmt.Println("SUCCESSFUL")
 			return nil
 		},
 	})
