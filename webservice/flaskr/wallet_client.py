@@ -31,7 +31,10 @@ class WalletClient():
         from_account = LocalAccount.from_private_key_hex(from_private_key);
         self.cli.meta42_share_token_by_path(from_account, account_address(to_address), token);
 
-    def GetTokens(self, address, token):
+    def GetTokens(self, address):
+        return self.cli.get_paths(address)
+
+    def HasToken(self, address, token):
         paths = self.cli.get_paths(address);
 
         if token in paths:
