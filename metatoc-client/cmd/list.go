@@ -22,7 +22,7 @@ func init() {
 		Help: "return a list of HDFS resource paths",
 		Flags: func(f *grumble.Flags) {
 			f.String("a", "address", "", "wallet address")
-			f.Int("o", "offset", 0, "specifies the page number of the hdfs paths to be display")
+			f.Int("o", "offset", 0, "specifies the page number of the HDFS paths to be display")
 			f.Int("l", "limit", 10, "limits the number of items on a page")
 		},
 		Args: func(a *grumble.Args) {

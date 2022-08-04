@@ -49,8 +49,9 @@ func (h *Http) SendRequest(result interface{}) error {
 
 	// new request
 	//fmt.Println("h.Method:", h.Method)
-	//fmt.Println("h.Url:", h.Url)
-	request, err := http.NewRequest(h.Method, h.Url, buf)
+	//fmt.Println("h.Url:", fmt.Sprintf("%s%s", h.Url, paramsString))
+	//fmt.Println("h.Data:", h.Data)
+	request, err := http.NewRequest(h.Method, fmt.Sprintf("%s%s", h.Url, paramsString), buf)
 	if err != nil {
 		return err
 	}
