@@ -35,14 +35,16 @@ fi
 #exit 0
 
 echo "Check metatoc-client exists..."
-metatoc0client_exists=$(docker image ls "metatoc-client:latest" | wc -l)
+metatoc0client_exists=$(docker image ls "meta42/metatoc-client:latest" | wc -l)
 if [ $metatoc0client_exists -eq 2 ]; then
   echo "Metatoc-client exists!"
 else
-  echo "Make metatoc-client..."
-  docker build --tag metatoc-client:latest ../.
+#  echo "Make metatoc-client..."
+#  docker build --tag metatoc-client:latest ../.
+  echo "Pull metatoc-client..."
+  docker pull meta42/metatoc-client:latest
 fi
 #exit 0
 
 echo "Run metatoc-client..."
-docker run --rm -ti -v $PWD/../json:/json --env METATOC_WEBSERVICE_ADDRESS=$metatoc_webservice_host:$metatoc_webservice_port --env METATOC_NATS_ADDRESS=$metatoc_nats_host:$metatoc_nats_port metatoc-client:latest
+docker run --rm -ti -v $PWD/../json:/json --env METATOC_WEBSERVICE_ADDRESS=$metatoc_webservice_host:$metatoc_webservice_port --env METATOC_NATS_ADDRESS=$metatoc_nats_host:$metatoc_nats_port meta42/metatoc-client:latest
