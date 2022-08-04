@@ -11,7 +11,7 @@ class ResultCode(Enum):
     PARAM_NOT_COMPLETE = 10004
 
     # Premission Error
-    PREMISSION_NO_ACCESS = 20001
+    PERMISSION_NO_ACCESS = 20001
 
     # Data Error
     RESULT_DATA_NONE = 30001

@@ -1,5 +1,6 @@
 import string
 import os
+import uuid
 
 from flask import (
     Blueprint, flash, g, redirect, request, url_for, jsonify
@@ -8,8 +9,12 @@ from flask import (
 from .db import get_db
 from .response import Response
 from .wallet_client import WalletClient
+from .ResultCode import ResultCode
 
 bp = Blueprint("block", __name__);
+
+FILE_PATH = "data";
+FILE_DOWNLOAD_URL = "https://"
 
 @bp.route("/paths", methods = ["POST", "GET", "PUT"])
 def paths():
@@ -24,15 +29,22 @@ def paths():
         content = params["content"];
 
         cli = WalletClient();
-        cli.MintNewToken(private_key, path);
+        cli.MintNewToken(private_key, address, path);
 
+        fileName = uuid.uuid4().hex;
         db.execute(
-            "INSERT INTO transactions (transaction_type, from_address, token_name) "
-            "VALUES (?, ?, ?)",
-            ("CREATE", address, path)
+            "INSERT INTO transactions (transaction_type, from_address, token_name, file_name) "
+            "VALUES (?, ?, ?, ?)",
+            ("CREATE", address, path, fileName)
         );
         db.commit();
 
+        dataPath = os.path.join(os.path.abspath(os.path.curdir), FILE_PATH);
+        if not os.path.exists(dataPath):
+            os.makedirs(dataPath);
+
+        with open(os.path.join(dataPath, fileName), mode = 'x') as f:
+            f.write(content)
 
     elif request.method == "GET":
         address = request.args.get("address");
@@ -50,8 +62,7 @@ def paths():
         else:
             tokens = db.execute(
                 "SELECT token_name FROM transactions "
-                "WHERE transaction_type='CREATE' "
-                "AND (from_address=? OR to_address=?) "
+                "WHERE from_address=? OR to_address=? "
                 "LIMIT ? OFFSET ?",
                 (address, address, limit, offset)
             ).fetchall();
@@ -70,15 +81,25 @@ def paths():
         to_address = params["to_address"];
         token_name = params["token_name"];
 
-        cli = WalletClient();
-        cli.ShareToken(private_key, to_address, token_name);
+        token = db.execute(
+            "SELECT * FROM transactions "
+            "WHERE token_name=? "
+            "AND (from_address=? OR to_address=?)",
+            (token_name, from_address, from_address)
+        ).fetchone();
 
-        db.execute(
-            "INSERT INTO transactions (transaction_type, from_address, to_address, token_name) "
-            "VALUES (?, ?, ?, ?)",
-            ("TRANSFER", from_address, to_address, token_name)
-        );
-        db.commit();
+        if token is None:
+            resp.setStatus(ResultCode.RESULT_DATA_NONE);
+        else:
+            cli = WalletClient();
+            cli.ShareToken(private_key, to_address, token_name);
+
+            db.execute(
+                "INSERT INTO transactions (transaction_type, from_address, to_address, token_name, file_name) "
+                "VALUES (?, ?, ?, ?, ?)",
+                ("TRANSFER", from_address, to_address, token_name, token["file_name"])
+            );
+            db.commit();
 
     return jsonify(str(resp));
 
@@ -86,12 +107,15 @@ def paths():
 def GetPathByAddress(hdfs_path):
     resp = Response();
 
-    address = request.args.get("address");
+    hdfs_path = "/" + hdfs_path;
+    params = request.get_json();
+    private_key = params["private_key"];
 
     cli = WalletClient();
+    address = cli.GetAddressOfAccount(private_key);
+
     if not cli.GetTokens(address, hdfs_path):
-        resp.setCode(20001);
-        resp.setMessage("PREMISSION_NO_ACCESS");
+        resp.setStatus(ResultCode.PERMISSION_NO_ACCESS);
 
         return jsonify(str(resp));
 
@@ -103,11 +127,15 @@ def GetPathByAddress(hdfs_path):
         "WHERE (from_address=? or to_address=?) "
         "AND token_name=?",
         (address, address, hdfs_path)
-    ).fetchall();
+    ).fetchone();
 
     if token is None:
-        resp.setData({"data_path": ""});
+        resp.setStatus(ResultCode.RESULT_DATA_NONE);
     else:
-        resp.setData({"data_path": "http://hdfs/file/url"});
+        dataPath = os.path.join(os.path.abspath(os.path.curdir), FILE_PATH);
+        with open(os.path.join(dataPath, token["file_name"]), mode='r') as f:
+            data = f.read();
+
+        resp.setData({"data": data});
 
     return jsonify(str(resp));

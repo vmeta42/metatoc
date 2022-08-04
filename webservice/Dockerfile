@@ -1,8 +1,13 @@
-FROM python:3.8.13-alpine3.16
+# FROM python:3.8.13-alpine3.16
+FROM python:3.8.13
 
 WORKDIR /usr/src/app
 
+# RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+# RUN apk add gcc linux-headers libc-dev libffi-dev musl-dev python3-dev openssl-dev cargo
+
 COPY . .
+RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple/
 RUN pip install --no-cache-dir -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
 ENV FLASK_APP=flaskr

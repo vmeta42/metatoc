@@ -1,6 +1,6 @@
 from sys import path
 
-from diem.utils import account_address
+from diem.utils import account_address, private_key_bytes
 from violas_client.client import Client
 from violas_client.vtypes.local_account import LocalAccount
 
@@ -20,15 +20,16 @@ class WalletClient():
         self.cli.create_child_vasp(self.p_vasp, account.account_address, account.auth_key.prefix());
         self.cli.meta42_accept(account);
 
-        return account.account_address.to_hex(), account.public_key_bytes.hex();
+        return account.account_address.to_hex(), private_key_bytes(account.private_key).hex();
 
-    def MintNewToken(self, private_key, token):
+    def MintNewToken(self, private_key, address, token):
         account = LocalAccount.from_private_key_hex(private_key);
+
         self.cli.meta42_mint_token(account, token);
 
     def ShareToken(self, from_private_key, to_address, token):
         from_account = LocalAccount.from_private_key_hex(from_private_key);
-        self.cli.meta42_share_token_by_path(from_account, to_address, token);
+        self.cli.meta42_share_token_by_path(from_account, account_address(to_address), token);
 
     def GetTokens(self, address, token):
         paths = self.cli.get_paths(address);
@@ -37,3 +38,7 @@ class WalletClient():
             return True;
         else:
             return False;
+
+    def GetAddressOfAccount(self, private_key):
+        account = LocalAccount.from_private_key_hex(private_key);
+        return account.account_address.to_hex();
