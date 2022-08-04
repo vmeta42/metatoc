@@ -1,5 +1,5 @@
-from canoser import Struct
-from move_core_types.account_address import AccountAddress
+from ..canoser import Struct
+from ..move_core_types.account_address import AccountAddress
 
 class MintedTokenEvent(Struct):
     _fields = [

@@ -1,7 +1,7 @@
-from canoser import Struct
-from vtypes.contants import hash_to_type_map, Meta42CodeType, name_to_type_map
-from vtypes.contants import minted_events_key, shared_events_key
-from vtypes.events import MintedTokenEvent, ShareTokenEvent
+from ..canoser import Struct
+from .contants import hash_to_type_map, Meta42CodeType, name_to_type_map
+from .contants import minted_events_key, shared_events_key
+from .events import MintedTokenEvent, ShareTokenEvent
 
 class TransactionView(Struct):
     def __init__(self, tx):

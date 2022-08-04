@@ -1,6 +1,6 @@
-from move_core_types.language_storage import StructTag
-from move_core_types.access_path import AccessPath, Accesses
-from move_core_types.account_address import AccountAddress
+from ..move_core_types.language_storage import StructTag
+from ..move_core_types.access_path import AccessPath, Accesses
+from ..move_core_types.account_address import AccountAddress
 
 class MoveResource():
     MODULE_NAME: str

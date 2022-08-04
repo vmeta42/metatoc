@@ -1,7 +1,7 @@
-from client import Client
-from vtypes.contants import server_url
-from vtypes.local_account import LocalAccount
-from vtypes.contants import Meta42CodeType
+from ..client import Client
+from ..vtypes.contants import server_url
+from ..vtypes.local_account import LocalAccount
+from ..vtypes.contants import Meta42CodeType
 
 cli = Client(server_url=server_url)
 p_vasp = LocalAccount.from_private_key_hex("346de128de4a6b69bd281ffbd19157fe19272a2d8608ef64708026580aeab11a")

@@ -166,6 +166,16 @@ paths:
           schema:
             type: string
             example: wallet.address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                private_key:
+                  type: string
+                  example: wallet.private.key
       responses:
         '200':
           description: Successfully returned the detail of data
@@ -183,6 +193,6 @@ paths:
                   data:
                     type: object
                     properties:
-                      data_path:
+                      data:
                         type: string
-                        example: http://hdfs/file/url
+                        example: content.of.the.path.HDFS.storaged

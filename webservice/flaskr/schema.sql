@@ -12,5 +12,6 @@ CREATE TABLE transactions (
        transaction_type TEXT,
        from_address TEXT,
        to_address TEXT,
-       token_name TEXT
+       token_name TEXT,
+       file_name TEXT
 );

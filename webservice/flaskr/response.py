@@ -1,25 +1,23 @@
 import json
+from .ResultCode import ResultCode
 
 class Response():
     def __init__(self):
-        self.code = 0;
-        self.message = "ok";
+        self.status = ResultCode.SUCCESSFUL;
         self.data = {}
 
     def __str__(self) -> str:
         resp = {};
-        resp["code"] = self.code;
-        resp["message"] = self.message;
+        resp["code"] = self.status.value
+        resp["message"] = self.status.name
+
         if bool(self.data):
             resp["data"] = self.data;
 
         return json.dumps(resp);
 
-    def setCode(self, code):
-        self.code = code;
-
-    def setMessage(self, message):
-        self.message = message;
+    def setStatus(self, status):
+        self.status = status
 
     def setData(self, data):
         self.data = data

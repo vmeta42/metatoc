@@ -1,8 +1,8 @@
-from canoser import Struct, RustEnum, BoolT, Uint8, Uint64, Uint128
-from canoser.util import int_list_to_bytes
+from ..canoser import Struct, RustEnum, BoolT, Uint8, Uint64, Uint128
+from ..canoser.util import int_list_to_bytes
 from .account_address import AccountAddress
 from .identifier import Identifier
-from move_core_types.hash import gen_hasher
+from .hash import gen_hasher
 
 CODE_TAG = 0
 RESOURCE_TAG = 1

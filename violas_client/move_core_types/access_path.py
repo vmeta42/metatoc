@@ -1,6 +1,6 @@
-from canoser import Struct, Uint64, RustEnum, DelegateT
-from move_core_types.account_address import AccountAddress
-from move_core_types.identifier import Identifier
+from ..canoser import Struct, Uint64, RustEnum, DelegateT
+from .account_address import AccountAddress
+from .identifier import Identifier
 
 class Field(Identifier):
     pass
