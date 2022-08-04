@@ -28,6 +28,16 @@ def paths():
         path = params["path"];
         content = params["content"];
 
+        token = db.execute(
+            "SELECT * FROM transactions "
+            "WHERE token_name=?",
+            (path,)
+        ).fetchone();
+
+        if token is not None:
+            resp.setStatus(ResultCode.DATA_ALERADY_EXISTED);
+            return jsonify(str(resp));
+
         cli = WalletClient();
         cli.MintNewToken(private_key, address, path);
 
@@ -52,6 +62,7 @@ def paths():
         limit = request.args.get("limit", 10, type=int);
 
         db = get_db();
+        paths = [];
         if address is None:
             tokens = db.execute(
                 "SELECT token_name FROM transactions "
@@ -59,17 +70,21 @@ def paths():
                 "LIMIT ? OFFSET ?",
                 (limit, offset)
             ).fetchall();
-        else:
-            tokens = db.execute(
-                "SELECT token_name FROM transactions "
-                "WHERE from_address=? OR to_address=? "
-                "LIMIT ? OFFSET ?",
-                (address, address, limit, offset)
-            ).fetchall();
 
-        paths = [];
-        for token in tokens:
-            paths.append(token["token_name"]);
+            for token in tokens:
+                paths.append(token["token_name"]);
+        else:
+            # tokens = db.execute(
+            #     "SELECT token_name FROM transactions "
+            #     "WHERE from_address=? OR to_address=? "
+            #     "LIMIT ? OFFSET ?",
+            #     (address, address, limit, offset)
+            # ).fetchall();
+            cli = WalletClient();
+            tokens = cli.GetTokens(address);
+
+            for token in tokens:
+                paths.append(token);
 
         resp.setData({"paths": paths});
 
@@ -114,7 +129,7 @@ def GetPathByAddress(hdfs_path):
     cli = WalletClient();
     address = cli.GetAddressOfAccount(private_key);
 
-    if not cli.GetTokens(address, hdfs_path):
+    if not cli.HasToken(address, hdfs_path):
         resp.setStatus(ResultCode.PERMISSION_NO_ACCESS);
 
         return jsonify(str(resp));
