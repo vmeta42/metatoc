@@ -1,0 +1,3 @@
+#! /bin/bash
+
+docker run --rm -v $PWD/diem-share:/opt/diem/var -p 8080:8080 meta42/violas-validator:v0.11.0 /opt/diem/bin/diem-node --test --config /opt/diem/var
