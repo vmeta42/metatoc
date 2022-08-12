@@ -8,7 +8,7 @@ from flask import (
 
 from .db import get_db
 from .response import Response
-from .wallet_client import WalletClient
+from .violas_client import ViolasClient
 from .ResultCode import ResultCode
 
 bp = Blueprint("block", __name__);
@@ -38,7 +38,7 @@ def paths():
             resp.setStatus(ResultCode.DATA_ALERADY_EXISTED);
             return jsonify(str(resp));
 
-        cli = WalletClient();
+        cli = ViolasClient();
         cli.MintNewToken(private_key, address, path);
 
         fileName = uuid.uuid4().hex;
@@ -80,7 +80,7 @@ def paths():
             #     "LIMIT ? OFFSET ?",
             #     (address, address, limit, offset)
             # ).fetchall();
-            cli = WalletClient();
+            cli = ViolasClient();
             tokens = cli.GetTokens(address);
 
             for token in tokens:
@@ -106,7 +106,7 @@ def paths():
         if token is None:
             resp.setStatus(ResultCode.RESULT_DATA_NONE);
         else:
-            cli = WalletClient();
+            cli = ViolasClient();
             cli.ShareToken(private_key, to_address, token_name);
 
             db.execute(
@@ -126,7 +126,7 @@ def GetPathByAddress(hdfs_path):
     params = request.get_json();
     private_key = params["private_key"];
 
-    cli = WalletClient();
+    cli = ViolasClient();
     address = cli.GetAddressOfAccount(private_key);
 
     if not cli.HasToken(address, hdfs_path):
