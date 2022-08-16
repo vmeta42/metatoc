@@ -20,11 +20,11 @@ def create_app(test_config = None):
     except OSError:
         pass;
 
-    from . import violas_client
-    violas_client.init_app(app);
-
     from . import db
     db.init_app(app);
+
+    from . import violas_client
+    violas_client.init_app(app);
 
     from . import wallet
     app.register_blueprint(wallet.bp);

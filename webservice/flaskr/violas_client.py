@@ -1,5 +1,7 @@
 from os import getenv
 from sys import path
+from time import sleep
+from diem.jsonrpc import NetworkError
 
 from diem.utils import account_address, private_key_bytes
 from flask.cli import with_appcontext
@@ -9,13 +11,13 @@ from violas_client.vtypes.local_account import LocalAccount
 from flask import current_app, g
 import click
 
-SERVER = getenv("CHAIN_ENV", "http://127.0.0.1:8080");
-ROOT_PRIVATE_KEY = "7b5a50c2caec5921b7b268cc08c2ce754921e3572aa2f68eddd5824888958b5b";
+SERVER = getenv("CHAIN_ENV", "http://validator:8080");
 VASP_PRIVATE_KEY = "346de128de4a6b69bd281ffbd19157fe19272a2d8608ef64708026580aeab11a";
 
 class ViolasClient():
     def __init__(self):
-        self.cli = Client(server_url=SERVER, root_private=ROOT_PRIVATE_KEY);
+        self.root_private_key = self.__GetPrivateKey();
+        self.cli = Client(server_url=SERVER, root_private=self.root_private_key);
         self.p_vasp = LocalAccount.from_private_key_hex(VASP_PRIVATE_KEY);
 
     def GetNewAccount(self):
@@ -54,14 +56,28 @@ class ViolasClient():
         self.cli.publish_compare();
         self.cli.publish_meta42();
         self.cli.allow_custom_script();
+        self.cli.create_parent_vasp(self.p_vasp.account_address, self.p_vasp.auth_key.prefix(), "VLS", b"metatoc");
         self.cli.meta42_initialize(self.p_vasp);
+
+    def __GetPrivateKey(self):
+        with open("./diem-share/mint.key", "rb") as f:
+            key = f.read();
+        return key[1:33].hex();
 
 @click.command("init-chain")
 @with_appcontext
 def init_chain_command():
-    cli = ViolasClient();
-    cli.InitializeChain();
-    click.echo("Initialized the Violas Chain.");
+    while(True):
+        try:
+            cli = ViolasClient();
+            cli.InitializeChain();
+            click.echo("Initialized the Violas Chain.");
+            break;
+        except NetworkError as e:
+            print(e);
+            print("Wait 5 seconds for Violas start.....");
+            sleep(5);
+            continue
 
 def init_app(app):
     app.cli.add_command(init_chain_command);

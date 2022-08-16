@@ -28,12 +28,24 @@ services:
     # version shortly
     image: "meta42/violas-validator:v0.11.0"
     volumes:
-      - type: volume
-        source: ./viols/diem-share
-        target: /opt/diem/var
+      - ../violas/diem-share:/opt/diem/var
     command: ["/opt/diem/bin/diem-node", "--test", "--config", "/opt/diem/var"]
     ports:
       - "8080:8080"
     expose:
       - 9101
-
+  init-chain:
+    image: "meta42/metatoc-webservice:latest"
+    volumes:
+      - ../violas/diem-share:/usr/src/app/diem-share
+    command: ["flask", "--app", "flaskr", "init-chain"]
+    depends_on:
+      - validator
+  WebService:
+    image: "meta42/metatoc-webservice:latest"
+    volumes:
+      - ../violas/diem-share:/usr/src/app/diem-share
+    ports:
+      - "2929:5000"
+    depends_on:
+      - init-chain
