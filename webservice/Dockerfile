@@ -10,8 +10,8 @@ COPY . .
 RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple/
 RUN pip install --no-cache-dir -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
-ENV FLASK_APP=flaskr
-ENV FLASK_ENV=development
-RUN flask init-db
+RUN flask --app flaskr init-db
 
-CMD ["flask", "run", "-h", "0.0.0.0"]
+EXPOSE 5000
+# CMD ["flask", "run", "-h", "0.0.0.0"]
+CMD ["waitress-serve", "--port", "5000", "--call", "flaskr:create_app"]

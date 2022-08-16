@@ -11,7 +11,7 @@ coverage==6.4
 cryptography==3.3.2
 dataclasses-json==0.5.7
 diem==1.7.1
-Flask==2.1.2
+Flask==2.2.2
 idna==2.7
 importlib-metadata==4.11.4
 iniconfig==1.1.1
@@ -63,6 +63,7 @@ typeguard==2.13.3
 typing-inspect==0.7.1
 typing_extensions==4.2.0
 urllib3==1.24.3
-Werkzeug==2.1.2
+waitress==2.1.2
+Werkzeug==2.2.2
 yarl==1.7.2
 zipp==3.8.0

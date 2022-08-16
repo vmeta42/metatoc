@@ -9,7 +9,7 @@ from flask.json import jsonify
 from .db import get_db
 from .response import Response
 
-from .wallet_client import WalletClient
+from .violas_client import ViolasClient
 
 bp = Blueprint("wallet", __name__);
 
@@ -18,7 +18,7 @@ def signup():
     resp = Response();
 
     if request.method == "GET":
-        cli = WalletClient();
+        cli = ViolasClient();
         address, private_key = cli.GetNewAccount();
         resp.setData({"address":address, "private_key":private_key});
 
