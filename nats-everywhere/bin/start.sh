@@ -32,7 +32,7 @@ if [ $nats_running -eq 2 ]; then
   echo "Nats is running!"
 else
   echo "Run nats..."
-  docker run --name metatoc-nats --rm --network host --rm -d -p 4222:4222 nats:latest -js
+  docker run --name metatoc-nats --rm --network host -d -p 4222:4222 nats:latest -js
 fi
 
 echo "Check nats-box exists..."
