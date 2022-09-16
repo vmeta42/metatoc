@@ -22,6 +22,7 @@ from typing import Optional
 class Client():
     def __init__(self, server_url, root_private):
         self._cli = DiemClient(server_url)
+        self._root_private = root_private
         self._root_account = LocalAccount.from_dict(
             {
                 "private_key": root_private,
@@ -37,6 +38,12 @@ class Client():
 
     def get_account_sequence(self, addr):
         return self._cli.get_account_sequence(addr)
+
+    def get_metadata(self, version=None):
+        return self._cli.get_metadata(version)
+
+    def get_latest_version(self):
+        return self.get_metadata().version
 
     def meta42_initialize(self, sender: LocalAccount, currency=VLS):
         script = vstdlib.encode_meta42_initialize_script()
@@ -167,10 +174,34 @@ class Client():
         txs = self._cli.get_transactions(start_version, limit, include_events=True)
         return [TransactionView(tx) for tx in txs]
 
+
     def get_account_state(self, addr) -> Optional[AccountState]:
         ac = self._cli.get_account_state_with_proof(addr)
         blob = AccountStateBlobView.deserialize(bytes.fromhex(ac.blob))
         return AccountState.deserialize(blob.blob)
+
+    def get_validator_infos(self):
+        infos = self.get_account_state(self._root_account.account_address).get_validator_infos()
+        start_versions = []
+        for info in infos:
+            ip = info.get("ip")
+            port = info.get("port")
+            cli = Client(f"http://{ip}:{port}", self._root_private)
+            start_versions.append(cli.get_latest_version())
+        import time
+        time.sleep(0.5)
+        for index, value in enumerate(infos):
+            ip = info.get("ip")
+            port = info.get("port")
+            cli = Client(f"http://{ip}:{port}", self._root_private)
+            end_version = cli.get_latest_version()
+            start_version = start_versions[index]
+            if end_version > start_version:
+                infos[index]["health"] = 1
+            else:
+                infos[index]["health"] = 0
+
+        return infos
 
     def get_paths(self, addr):
         state = self.get_account_state(addr)
@@ -215,3 +246,5 @@ class Client():
         sha3 = new_sha3_256()
         sha3.update(data)
         return sha3.digest()
+
+

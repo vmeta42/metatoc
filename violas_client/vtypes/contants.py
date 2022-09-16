@@ -1,5 +1,5 @@
-server_url: str = "http://172.22.50.186:8080"
-root_private="5138780620b4b0216fb2ce7962e95260d0ecd527a51cdcdea825a33517ecf6f9"
+# server_url: str = "http://172.22.50.186:8080"
+# root_private="5138780620b4b0216fb2ce7962e95260d0ecd527a51cdcdea825a33517ecf6f9"
 
 
 VLS: str = "VLS"
