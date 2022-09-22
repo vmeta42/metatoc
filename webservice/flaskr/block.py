@@ -8,7 +8,7 @@ from flask import (
 
 from .db import get_db
 from .response import Response
-from .violas_client import ViolasClient
+from .violas_client_wrap import ViolasClient
 from .ResultCode import ResultCode
 
 bp = Blueprint("block", __name__);

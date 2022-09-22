@@ -1,7 +1,6 @@
 import os
 
 from flask import Flask
-from violas_client.vtypes.local_account import LocalAccount
 
 def create_app(test_config = None):
     app = Flask(__name__, instance_relative_config=True);
@@ -23,8 +22,8 @@ def create_app(test_config = None):
     from . import db
     db.init_app(app);
 
-    from . import violas_client
-    violas_client.init_app(app);
+    from . import violas_client_wrap
+    violas_client_wrap.init_app(app);
 
     from . import wallet
     app.register_blueprint(wallet.bp);

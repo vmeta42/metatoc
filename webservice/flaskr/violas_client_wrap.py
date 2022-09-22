@@ -1,8 +1,8 @@
 from os import getenv
 from sys import path
 from time import sleep
-from diem.jsonrpc import NetworkError
 
+from diem.jsonrpc import NetworkError
 from diem.utils import account_address, private_key_bytes
 from flask.cli import with_appcontext
 from violas_client.client import Client
