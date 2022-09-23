@@ -22,8 +22,8 @@ def create_app(test_config = None):
     from . import db
     db.init_app(app);
 
-    from . import violas_client_wrap
-    violas_client_wrap.init_app(app);
+    from . import ViolasClientWrapper
+    ViolasClientWrapper.init_app(app);
 
     from . import wallet
     app.register_blueprint(wallet.bp);
