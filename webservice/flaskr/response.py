@@ -1,5 +1,5 @@
 import json
-from .ResultCode import ResultCode
+from .result_code import ResultCode
 
 class Response():
     def __init__(self):

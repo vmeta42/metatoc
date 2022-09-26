@@ -8,7 +8,7 @@ from flask.json import jsonify
 
 from .db import get_db
 from .response import Response
-from .ViolasClientWrapper import ViolasClient
+from .violas_client_wrapper import ViolasClient
 
 bp = Blueprint("wallet", __name__);
 
