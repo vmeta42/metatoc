@@ -29,7 +29,8 @@ services:
     image: "meta42/violas-validator:v0.11.0"
     volumes:
       - ../violas/diem-share:/opt/diem/var
-    command: ["/opt/diem/bin/diem-node", "--test", "--config", "/opt/diem/var"]
+        #    command: ["/opt/diem/bin/diem-node", "--test", "--config", "/opt/diem/var"]
+    command: /bin/bash -c "cp /opt/diem/var/validator_node_template.yaml / && rm /opt/diem/var/* -rf && cp /validator_node_template.yaml /opt/diem/var/ && /opt/diem/bin/diem-node --test --config /opt/diem/var" 
     ports:
       - "8080:8080"
     expose:
