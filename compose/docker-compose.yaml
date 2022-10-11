@@ -28,25 +28,77 @@ services:
     # version shortly
     image: "meta42/violas-validator:v0.11.0"
     volumes:
-      - ../violas/diem-share:/opt/diem/var
-        #    command: ["/opt/diem/bin/diem-node", "--test", "--config", "/opt/diem/var"]
-    command: /bin/bash -c "cp /opt/diem/var/validator_node_template.yaml / && rm /opt/diem/var/* -rf && cp /validator_node_template.yaml /opt/diem/var/ && /opt/diem/bin/diem-node --test --config /opt/diem/var" 
+      - ../violas/etc:/opt/diem/etc
+    command: ["/opt/diem/bin/diem-node", "--config", "/opt/diem/etc/0/node.yaml"]
+    networks:
+      violas:
+        ipv4_address: 172.18.0.10
     ports:
-      - "8080:8080"
-    expose:
-      - 9101
+      - "50001:50001"
+  validator1:
+    # Note this image currently does not support this, will update to the appropriate minimum
+    # version shortly
+    image: "meta42/violas-validator:v0.11.0"
+    volumes:
+      - ../violas/etc:/opt/diem/etc
+    command: ["/opt/diem/bin/diem-node", "--config", "/opt/diem/etc/1/node.yaml"]
+    networks:
+      violas:
+        ipv4_address: 172.18.0.11
+    ports:
+      - "50002:50001"
+  validator2:
+    # Note this image currently does not support this, will update to the appropriate minimum
+    # version shortly
+    image: "meta42/violas-validator:v0.11.0"
+    volumes:
+      - ../violas/etc:/opt/diem/etc
+    command: ["/opt/diem/bin/diem-node", "--config", "/opt/diem/etc/2/node.yaml"]
+    networks:
+      violas:
+        ipv4_address: 172.18.0.12
+    ports:
+      - "50003:50001"
+  validator3:
+    # Note this image currently does not support this, will update to the appropriate minimum
+    # version shortly
+    image: "meta42/violas-validator:v0.11.0"
+    volumes:
+      - ../violas/etc:/opt/diem/etc
+    command: ["/opt/diem/bin/diem-node", "--config", "/opt/diem/etc/3/node.yaml"]
+    networks:
+      violas:
+        ipv4_address: 172.18.0.13
+    ports:
+      - "50004:50001"
   init-chain:
+    environment:
+      - CHAIN_ENV=http://172.18.0.10:50001
     image: "meta42/metatoc-webservice:latest"
     volumes:
-      - ../violas/diem-share:/usr/src/app/diem-share
+      - ../violas/etc:/usr/src/app/diem-share
     command: ["flask", "--app", "flaskr", "init-chain"]
+    networks:
+      violas:
+        ipv4_address: 172.18.0.14
     depends_on:
       - validator
   WebService:
+    environment:
+      - CHAIN_ENV=http://172.18.0.10:50001
     image: "meta42/metatoc-webservice:latest"
     volumes:
-      - ../violas/diem-share:/usr/src/app/diem-share
+      - ../violas/etc:/usr/src/app/diem-share
     ports:
       - "2929:5000"
+    networks:
+      violas:
+        ipv4_address: 172.18.0.15
     depends_on:
       - init-chain
+
+networks:
+  violas:
+    ipam:
+      config:
+        - subnet: 172.18.0.0/24

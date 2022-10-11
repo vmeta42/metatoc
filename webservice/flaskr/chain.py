@@ -1,0 +1,21 @@
+from flask import (
+    Blueprint, flash, g, request
+)
+from flask.json import jsonify
+
+from .violas_client_wrapper import ViolasClient
+from .response import Response
+
+bp = Blueprint("chain", __name__);
+
+@bp.route("/nodes", methods = ["GET"])
+def GetNodeInfo():
+    resp = Response();
+
+    if request.method == "GET":
+        cli = ViolasClient();
+        infos = cli.GetNodeInfo();
+
+        resp.setData(infos);
+
+    return jsonify(str(resp));

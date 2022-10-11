@@ -1,8 +1,8 @@
 from os import getenv
 from sys import path
 from time import sleep
-from diem.jsonrpc import NetworkError
 
+from diem.jsonrpc import NetworkError
 from diem.utils import account_address, private_key_bytes
 from flask.cli import with_appcontext
 from violas_client.client import Client
@@ -11,12 +11,15 @@ from violas_client.vtypes.local_account import LocalAccount
 from flask import current_app, g
 import click
 
-SERVER = getenv("CHAIN_ENV", "http://validator:8080");
+# SERVER = getenv("CHAIN_ENV", "http://validator:8080");
+SERVER = getenv("CHAIN_ENV", "http://172.22.16.4:50001");
 VASP_PRIVATE_KEY = "346de128de4a6b69bd281ffbd19157fe19272a2d8608ef64708026580aeab11a";
 
 class ViolasClient():
     def __init__(self):
-        self.root_private_key = self.__GetPrivateKey();
+        # self.root_private_key = self.__GetPrivateKey();
+        self.root_private_key = "f46d0fcf1a0710a9df25a4f9aa1bb849c455bfecf9b41447104bfbde1efa2c72";
+
         self.cli = Client(server_url=SERVER, root_private=self.root_private_key);
         self.p_vasp = LocalAccount.from_private_key_hex(VASP_PRIVATE_KEY);
 
@@ -38,6 +41,9 @@ class ViolasClient():
 
     def GetTokens(self, address):
         return self.cli.get_paths(address)
+
+    def GetNodeInfo(self):
+        return self.cli.get_validator_infos();
 
     def HasToken(self, address, token):
         paths = self.cli.get_paths(address);
