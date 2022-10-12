@@ -7,10 +7,11 @@ from diem.bcs import serialize, deserialize
 from .vtypes.account_state_blob import AccountStateBlobView
 from .vtypes.local_account import LocalAccount
 from .vtypes.account_state import AccountState
-from .vtypes.contants import VLS
+from .vtypes.contants import VLS, shared_events_key, minted_events_key
 from .vtypes.transaction import TransactionView
 
 from .move_core_types.hash import new_sha3_256
+from .vtypes.events import MintedTokenEvent, ShareTokenEvent
 
 from . import vstdlib
 
@@ -44,6 +45,14 @@ class Client():
 
     def get_latest_version(self):
         return self.get_metadata().version
+
+    def get_minted_events(self,start, limit):
+        events= self._cli.get_events(minted_events_key, start, limit)
+        return [MintedTokenEvent.deserialize(bytes.fromhex(event.data.bytes)) for event in events]
+
+    def get_shared_events(self,start, limit):
+        events = self._cli.get_events(shared_events_key, start, limit)
+        return [ShareTokenEvent.deserialize(bytes.fromhex(event.data.bytes)) for event in events]
 
     def meta42_initialize(self, sender: LocalAccount, currency=VLS):
         script = vstdlib.encode_meta42_initialize_script()
