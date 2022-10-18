@@ -154,3 +154,57 @@ def GetPathByAddress(hdfs_path):
         resp.setData({"data": data});
 
     return jsonify(str(resp));
+
+@bp.route("/paths/trace", methods = ["GET"])
+def GetTraceOfTransactions():
+    resp = Response();
+
+    address = request.args.get("address");
+    hdfs_path = request.args.get("hdfs_path");
+
+    db = get_db();
+    token = db.execute(
+        "SELECT * "
+        "FROM transactions "
+        "WHERE token_name=? "
+        "AND transaction_type='CREATE'",
+        (hdfs_path,)
+    ).fetchone();
+
+    datas = list();
+
+    if token is None:
+        resp.setStatus(ResultCode.RESULT_DATA_NONE);
+    else:
+        data = {
+            "address": token["from_address"],
+            "token": token["token_name"]
+        };
+        datas.append(data);
+
+        from_address = token["from_address"];
+        while (True):
+            token = db.execute(
+                "SELECT * "
+                "FROM transactions "
+                "WHERE token_name=? "
+                "AND from_address=? "
+                "AND transaction_type='TRANSFER' ",
+                (hdfs_path, from_address)
+            ).fetchone();
+
+            if token is None:
+                break;
+            else:
+                data = {
+                    "address": token["to_address"],
+                    "token": token["token_name"]
+                };
+
+            datas.append(data);
+
+            from_address = token["to_address"];
+
+        resp.setData({"data": datas});
+
+    return jsonify(str(resp));
