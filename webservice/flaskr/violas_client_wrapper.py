@@ -17,8 +17,7 @@ VASP_PRIVATE_KEY = "346de128de4a6b69bd281ffbd19157fe19272a2d8608ef64708026580aea
 
 class ViolasClient():
     def __init__(self):
-        # self.root_private_key = self.__GetPrivateKey();
-        self.root_private_key = "f46d0fcf1a0710a9df25a4f9aa1bb849c455bfecf9b41447104bfbde1efa2c72";
+        self.root_private_key = self.__GetPrivateKey();
 
         self.cli = Client(server_url=SERVER, root_private=self.root_private_key);
         self.p_vasp = LocalAccount.from_private_key_hex(VASP_PRIVATE_KEY);
@@ -56,6 +55,10 @@ class ViolasClient():
     def GetAddressOfAccount(self, private_key):
         account = LocalAccount.from_private_key_hex(private_key);
         return account.account_address.to_hex();
+
+    def GetSharedHistory(self, start = 0, limit = 10):
+        events = self.cli.get_shared_events(start, limit);
+        return events;
 
     def InitializeChain(self):
         self.cli.allow_publishing_module(True);
