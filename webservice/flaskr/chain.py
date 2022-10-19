@@ -15,6 +15,8 @@ def GetNodeInfo():
     if request.method == "GET":
         cli = ViolasClient();
         infos = cli.GetNodeInfo();
+        for i in infos:
+            i.pop("address");
 
         resp.setData(infos);
 

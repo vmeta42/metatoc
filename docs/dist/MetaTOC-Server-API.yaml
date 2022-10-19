@@ -196,3 +196,77 @@ paths:
                       data:
                         type: string
                         example: content.of.the.path.HDFS.storaged
+  /paths/trace:
+    get:
+      description: Get the trace of shared tokens
+      parameters:
+        - name: address
+          in: query
+          description: wallet address
+          required: true
+          schema:
+            type: string
+            example: wallet.adderss
+        - name: hdfs_path
+          in: query
+          description: hdfs save path
+          required: true
+          schema:
+            type: string
+            example: /path/of/hdfs/content
+      responses:
+        '200':
+          description: Successfully returned the full trace of shared tokens
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: ok
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                          example: wallet.address
+                        hdfs_path:
+                          type: string
+                          example: /hdfs/content/path
+  /nodes:
+    get:
+      discription: Get violas chain node status
+      responses:
+        200:
+          description: Successfully returned the violas chain node status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: ok
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        ip:
+                          type: string
+                          example: 172.22.16.4
+                        port:
+                          type: integer
+                          example: 50001
+                        health:
+                          type: integer
+                          example: 0
