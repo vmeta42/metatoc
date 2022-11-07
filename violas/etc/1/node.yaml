@@ -26,7 +26,7 @@ consensus:
     logger:
       chan_size: 10000
       is_async: true
-      level: INFO
+      level: ERROR
     service:
       type: thread
     test: ~
@@ -90,7 +90,7 @@ full_node_networks:
 logger:
   chan_size: 10000
   is_async: true
-  level: INFO
+  level: ERROR
 mempool:
   capacity: 1000000
   capacity_per_user: 100
