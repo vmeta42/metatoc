@@ -83,19 +83,6 @@ services:
         ipv4_address: 172.18.0.14
     depends_on:
       - validator
-  WebService:
-    environment:
-      - CHAIN_ENV=http://172.18.0.10:50001
-    image: "meta42/metatoc-webservice:latest"
-    volumes:
-      - ../violas/etc:/usr/src/app/diem-share
-    ports:
-      - "2929:5000"
-    networks:
-      violas:
-        ipv4_address: 172.18.0.15
-    depends_on:
-      - init-chain
 
 networks:
   violas:
