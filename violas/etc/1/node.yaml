@@ -1,6 +1,6 @@
 ---
 base:
-  data_dir: /opt/diem/etc/1
+  data_dir: "./etc/1"
   role: validator
   waypoint:
     from_storage:
@@ -41,10 +41,10 @@ consensus:
   channel_size: 30
   back_pressure_limit: 1
 debug_interface:
-  admission_control_node_debug_port: 36031
+  admission_control_node_debug_port: 34837
   address: 0.0.0.0
-  metrics_server_port: 39681
-  public_metrics_server_port: 40601
+  metrics_server_port: 34705
+  public_metrics_server_port: 41033
 execution:
   sign_vote_proposal: true
   genesis_file_location: /opt/diem/etc/1/genesis.blob
@@ -71,7 +71,7 @@ full_node_networks:
         namespace: ~
       key_name: fullnode_network
       peer_id_name: owner_account
-    listen_address: /ip4/0.0.0.0/tcp/43155
+    listen_address: /ip4/0.0.0.0/tcp/8001
     mutual_authentication: false
     network_address_key_backend: ~
     network_id:
@@ -106,7 +106,7 @@ mempool:
   system_transaction_gc_interval_ms: 60000
 metrics: {}
 json_rpc:
-  address: "127.0.0.1:39635"
+  address: "127.0.0.1:41469"
   batch_size_limit: 20
   page_size_limit: 1000
   content_length_limit: 32768
@@ -129,8 +129,8 @@ state_sync:
   sync_request_timeout_ms: 60000
   tick_interval_ms: 100
 storage:
-  address: "127.0.0.1:38149"
-  backup_service_address: "127.0.0.1:37853"
+  address: "127.0.0.1:39809"
+  backup_service_address: "127.0.0.1:33633"
   dir: db
   grpc_max_receive_len: 100000000
   prune_window: 1000000

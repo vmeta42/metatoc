@@ -257,3 +257,8 @@ class Client():
         return sha3.digest()
 
 
+if __name__ == "__main__":
+    server_url = "http://172.22.50.202:50001"
+    private_key = "c2a791a6a28b5cbe6b0dd20689a3a1b5319d1004423b7ea1ac9005b94053682c"
+    client = Client(server_url, private_key)
+    client.allow_publishing_module()
