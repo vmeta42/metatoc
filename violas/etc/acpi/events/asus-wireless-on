@@ -1,3 +1,0 @@
-event=hotkey (ATKD|HOTK) 0000005f
-action=/etc/acpi/asus-wireless.sh on
-

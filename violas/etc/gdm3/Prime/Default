@@ -1,6 +1,0 @@
-#!/bin/sh
-
-primeoffload=/sbin/prime-offload
-if [ -f "$primeoffload" ]; then
-    $primeoffload
-fi

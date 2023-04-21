@@ -1,3 +1,0 @@
-# Whether the daemon should be started at boot time.
-# Set to 1 to start.
-ENABLED=1

@@ -1,4 +1,0 @@
-# Defaults for the speech-dispatcher initscript, from speech-dispatcher
-
-# Set to yes to start system wide Speech Dispatcher
-RUN=no

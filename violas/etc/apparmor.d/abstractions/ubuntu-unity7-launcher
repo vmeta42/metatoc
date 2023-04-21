@@ -1,7 +1,0 @@
-  #
-  # Access required for connecting to/communicating with the Unity Launcher
-  #
-  dbus (send)
-      bus=session
-      interface="com.canonical.Unity.LauncherEntry"
-      member="Update",

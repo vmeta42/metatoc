@@ -1,4 +1,0 @@
-#!/bin/sh
-stamp="/var/lib/ubuntu-advantage/messages/motd-esm-service-status"
-
-[ ! -r "$stamp" ] || cat "$stamp"

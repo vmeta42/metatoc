@@ -1,7 +1,0 @@
-[Unit]
-Description=Ceph cluster 8d40c87c-802d-11ed-8045-fa163e0c1932
-PartOf=ceph.target
-Before=ceph.target
-
-[Install]
-WantedBy=multi-user.target ceph.target
