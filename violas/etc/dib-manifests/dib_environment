@@ -1,0 +1,7 @@
+declare -x DIB_ARGS="ubuntu vm dhcp-all-interfaces devuser -o ubuntu-bionic-image.qcow2"
+declare -x DIB_CLOUD_INIT_DATASOURCES="ConfigDrive"
+declare -x DIB_DEV_USER_PASSWORD="stack@vnet"
+declare -x DIB_DEV_USER_PWDLESS_SUDO="yes"
+declare -x DIB_DHCP_TIMEOUT="90"
+declare -x DIB_PYTHON_EXEC="/usr/bin/python"
+declare -x DIB_RELEASE="bionic"

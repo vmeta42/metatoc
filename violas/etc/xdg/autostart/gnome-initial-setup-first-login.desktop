@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=Initial Setup
+Icon=preferences-system
+Exec=/usr/lib/gnome-initial-setup/gnome-initial-setup --existing-user
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;System;
+OnlyShowIn=GNOME;Unity;
+NoDisplay=true
+AutostartCondition=unless-exists gnome-initial-setup-done
+X-GNOME-Bugzilla-Bugzilla=GNOME
+X-GNOME-Bugzilla-Product=gnome-initial-setup
+X-GNOME-Bugzilla-Component=general
+X-GNOME-Bugzilla-Version=unknown
+X-Ubuntu-Gettext-Domain=gnome-initial-setup

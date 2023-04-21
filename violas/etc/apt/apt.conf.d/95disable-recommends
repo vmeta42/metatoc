@@ -1,0 +1,2 @@
+APT::Install-Recommends "0";
+Apt::Install-Suggests "0";

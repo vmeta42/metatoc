@@ -1,0 +1,5 @@
+[Unit]
+Description=All Ceph clusters and services
+
+[Install]
+WantedBy=multi-user.target
