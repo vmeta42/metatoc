@@ -106,7 +106,7 @@ mempool:
   system_transaction_gc_interval_ms: 60000
 metrics: {}
 json_rpc:
-  address: "127.0.0.1:35699"
+  address: "0.0.0.0:50001"
   batch_size_limit: 20
   page_size_limit: 1000
   content_length_limit: 32768
