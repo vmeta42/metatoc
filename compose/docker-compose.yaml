@@ -96,9 +96,32 @@ services:
         ipv4_address: 172.18.0.15
     depends_on:
       - init-chain
+  metatoc-ui-chatgpt-proxy:
+    image: meta42/metatoc-ui-chatgpt-proxy:latest
+    environment:
+      - API_KEY=API_KEY
+      - PROXY_URL=PROXY_URL
+    expose:
+      - "3001"
+    networks:
+      violas:
+        ipv4_address: 172.18.0.16
+  metatoc-ui:
+    image: meta42/metatoc-ui:latest
+    environment:
+      - chatgpt_service_proxy_pass=http://metatoc-ui-chatgpt-proxy:3001
+      - blockchain_service_proxy_pass=http://WebService:5000
+    ports:
+      - "80:80"
+    networks:
+      violas:
+        ipv4_address: 172.18.0.17
+    depends_on:
+      - WebService
+      - metatoc-ui-chatgpt-proxy
 networks:
   violas:
     ipam:
       config:
         - subnet: 172.18.0.0/24
- 
+

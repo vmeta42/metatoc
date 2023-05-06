@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  metatoc-ui-chatgpt-proxy:
+    image: harbor.dev.21vianet.com/metatoc/metatoc-ui-chatgpt-proxy:latest
+    environment:
+      - API_KEY=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
+      - PROXY_URL=http://172.16.31.118:15732
+    expose:
+      - "3001"
+    networks:
+      - metatoc-network
+
+  metatoc-ui:
+    image: harbor.dev.21vianet.com/metatoc/metatoc-ui:latest
+    environment:
+      - chatgpt_service_proxy_pass=http://metatoc-ui-chatgpt-proxy:3001
+      - blockchain_service_proxy_pass=http://172.22.50.202:2929
+    ports:
+      - "80:80"
+    networks:
+      - metatoc-network
+
+networks:
+  metatoc-network:

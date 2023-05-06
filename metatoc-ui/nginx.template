@@ -1,0 +1,27 @@
+server {
+    listen       80;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/sendMsg{
+        rewrite ^/api(/.*)?$ $1 break;
+        include uwsgi_params;
+        proxy_pass $chatgpt_service_proxy_pass;
+        proxy_connect_timeout 10s;
+        proxy_send_timeout 10s;
+        proxy_read_timeout 10s;
+    }
+
+    location /api/block{
+        rewrite ^/api/block(/.*)?$ $1 break;
+        include uwsgi_params;
+        proxy_pass $blockchain_service_proxy_pass;
+        proxy_connect_timeout 10s;
+        proxy_send_timeout 10s;
+        proxy_read_timeout 10s;
+    }
+}
