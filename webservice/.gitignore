@@ -3,3 +3,4 @@ Pipfile.lock
 instance/*
 diem
 violas_client
+.projectile
