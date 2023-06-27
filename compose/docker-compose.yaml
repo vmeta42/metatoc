@@ -29,7 +29,12 @@ services:
     image: "meta42/violas-validator:v0.11.0"
     volumes:
       - ../violas/etc:/opt/diem/etc
-    command: ["/opt/diem/bin/diem-node", "--config", "/opt/diem/etc/0/node.yaml"]
+    command:
+      [
+        "/opt/diem/bin/diem-node",
+        "--config",
+        "/opt/diem/etc/0/node.yaml"
+      ]
     networks:
       violas:
         ipv4_address: 172.18.0.10
@@ -41,7 +46,12 @@ services:
     image: "meta42/violas-validator:v0.11.0"
     volumes:
       - ../violas/etc:/opt/diem/etc
-    command: ["/opt/diem/bin/diem-node", "--config", "/opt/diem/etc/1/node.yaml"]
+    command:
+      [
+        "/opt/diem/bin/diem-node",
+        "--config",
+        "/opt/diem/etc/1/node.yaml"
+      ]
     networks:
       violas:
         ipv4_address: 172.18.0.11
@@ -53,7 +63,12 @@ services:
     image: "meta42/violas-validator:v0.11.0"
     volumes:
       - ../violas/etc:/opt/diem/etc
-    command: ["/opt/diem/bin/diem-node", "--config", "/opt/diem/etc/2/node.yaml"]
+    command:
+      [
+        "/opt/diem/bin/diem-node",
+        "--config",
+        "/opt/diem/etc/2/node.yaml"
+      ]
     networks:
       violas:
         ipv4_address: 172.18.0.12
@@ -65,7 +80,12 @@ services:
     image: "meta42/violas-validator:v0.11.0"
     volumes:
       - ../violas/etc:/opt/diem/etc
-    command: ["/opt/diem/bin/diem-node", "--config", "/opt/diem/etc/3/node.yaml"]
+    command:
+      [
+        "/opt/diem/bin/diem-node",
+        "--config",
+        "/opt/diem/etc/3/node.yaml"
+      ]
     networks:
       violas:
         ipv4_address: 172.18.0.13
@@ -77,7 +97,7 @@ services:
     image: "meta42/metatoc-webservice:latest"
     volumes:
       - ../violas/etc:/usr/src/app/diem-share
-    command: ["flask", "--app", "flaskr", "init-chain"]
+    command: [ "flask", "--app", "flaskr", "init-chain" ]
     networks:
       violas:
         ipv4_address: 172.18.0.14
@@ -116,7 +136,7 @@ services:
       - ../minio/config:/root/.minio
     expose:
       - "9000"
-    command: ["server", "/data"]
+    command: [ "server", "/data" ]
     networks:
       violas:
         ipv4_address: 172.18.0.17
@@ -133,7 +153,7 @@ services:
     depends_on:
       - minio
   metatoc-ui:
-    image: metatoc-ui:latest
+    image: meta42/metatoc-ui:latest
     environment:
       - chatgpt_service_proxy_pass=http://metatoc-ui-chatgpt-proxy:3001
       - blockchain_service_proxy_pass=http://WebService:5000
@@ -152,4 +172,3 @@ networks:
     ipam:
       config:
         - subnet: 172.18.0.0/24
-
