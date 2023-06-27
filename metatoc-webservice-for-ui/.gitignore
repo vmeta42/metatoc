@@ -1,0 +1,7 @@
+.idea
+metatoc-webservice.*
+routers/commentsRouter_*
+*.tmp
+.DS_Store
+swagger*
+builds
