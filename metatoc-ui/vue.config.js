@@ -19,6 +19,14 @@ module.exports = defineConfig({
           "^/api/block": "",
         },
       },
+      "/api/metatoc-service/v1/": {
+        // target: "http://172.16.31.118:8080",
+        target: "http://172.22.50.211:8088",
+        changOrigin: true,
+        pathRewrite: {
+          "^/api": "",
+        },
+      }
       // "/api/block/paths": {
       //   target: "http://172.22.50.202:2929",
       //   changOrigin: true,

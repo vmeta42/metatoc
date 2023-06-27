@@ -1,4 +1,4 @@
-import { $get, $post, $put } from "./request";
+import { $post, $put } from "./request";
 
 const create = (private_key, address, path, content) => {
   return $post("/block/paths", {
@@ -41,10 +41,10 @@ const share = (private_key, from_address, to_address, token_name) => {
 };
 
 const signup = () => {
-  return $get("/block/signup").then(
+  return $post("/metatoc-service/v1/blockchain/signup").then(
     (res) => {
-      console.log("signup resp res==>", JSON.parse(res.data));
-      return JSON.parse(res.data);
+      // console.log("signup resp res==>", JSON.parse(res.data));
+      return res.data.data;
     },
     (err) => {
       console.log("signup resp err==>", err);
