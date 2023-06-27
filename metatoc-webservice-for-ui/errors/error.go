@@ -1,0 +1,29 @@
+package errors
+
+const (
+	CREATE_UPLOAD_FOLDER_ERROR_MESSAGE = "创建上传文件夹失败"
+
+	UPLOAD_FILE_PARAMS_READ_ERROR_MESSAGE = "上传文件接口参数解析失败"
+	UPLOAD_FILE_ERROR_MESSAGE             = "上传文件失败"
+
+	DOWNLOAD_FILE_PARAMS_IS_EMPTY_ERROR_MESSAGE = "下载文件接口参数不能为空"
+	DOWNLOAD_FILE_ERROR_MESSAGE                 = "下载文件失败"
+
+	LIST_OBJECTS_PARAMS_READ_ERROR_MESSAGE     = "获取对象列表接口参数解析失败"
+	LIST_OBJECTS_PARAMS_IS_EMPTY_ERROR_MESSAGE = "获取对象列表接口参数不能为空"
+	LIST_OBJECTS_GET_ERROR_MESSAGE             = "获取对象列表失败"
+
+	SIGNUP_WALLET_ADDRESS_ERROR_MESSAGE = "注册钱包地址失败"
+
+	CREATE_BLOCKCHAIN_RECORD_PARAMS_READ_ERROR_MESSAGE = "创建区块链记录接口参数解析失败"
+	CREATE_BLOCKCHAIN_RECORD_ERROR_MESSAGE             = "创建区块链记录失败"
+
+	SHARE_RECORD_PARAMS_READ_ERROR_MESSAGE = "分享区块链记录接口参数解析失败"
+	SHARE_RECORD_ERROR_MESSAGE             = "分享区块链记录失败"
+
+	LIST_RECORD_PARAMS_READ_ERROR_MESSAGE = "获取区块链记录接口参数解析失败"
+	LIST_RECORD_ERROR_MESSAGE             = "获取区块链记录失败"
+
+	VIEW_RECORD_PARAMS_READ_ERROR_MESSAGE = "查看区块链记录接口参数解析失败"
+	VIEW_RECORD_ERROR_MESSAGE             = "查看区块链记录失败"
+)
