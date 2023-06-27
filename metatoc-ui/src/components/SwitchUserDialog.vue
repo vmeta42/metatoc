@@ -1,20 +1,25 @@
 <template>
-  <div>
-    <a-modal
+  <div style="min-height: 400px;">
+    <!-- <a-modal
       :visible="showPopup"
       title="Switch user"
       @cancel="onHandleClose"
       :destroyOnClose="true"
-    >
+    > -->
       <div class="user-switch-container">
-        <a-row>
-          <a-col :span="24" v-for="user in myUsers" :key="user.id">
+        <a-card :bordered="false" :bodyStyle="cardBodyStyle" style="height: 100%;">
+          <UserOutlined />
+          <span :style="{ paddingLeft: '14px' }">用户列表</span>
+        </a-card>
+        <a-divider style="margin: 0px 0px 10px 0px" />
+        <a-row style="margin: 0px 10px;height: 100%;">
+          <a-col :span="24" v-for="user in myUsers" :key="user.id" @click="onHandleSubmit(this.selectedUserId)">
             <div
               class="user-card"
               :class="{ 'user-card-selected': user.id === selectedUserId }"
               @click="selectUser(user)"
             >
-              <div class="user-avatar">
+              <div class="user-avatar" style="margin-top:5px;">
                 <a-avatar :src="handleUserAvatar(user.avatar)" />
               </div>
               <div class="user-info">
@@ -27,7 +32,7 @@
           </a-col>
         </a-row>
       </div>
-      <template #footer>
+      <!-- <template #footer>
         <a-button @click="onHandleClose">Cancel</a-button>
         <a-button
           type="primary"
@@ -35,13 +40,14 @@
           :loading="loadingPopup"
           >OK</a-button
         >
-      </template>
-    </a-modal>
+      </template> -->
+    <!-- </a-modal> -->
   </div>
 </template>
 <script>
 import { defineComponent, ref, watchEffect } from "vue";
 import { message } from "ant-design-vue";
+import { UserOutlined } from "@ant-design/icons-vue";
 import EmilyJohnsonAvatar from "@/assets/avatar/pexels-photo-16187929.jpeg";
 import MichaelSmithAvatar from "@/assets/avatar/pexels-photo-16161525.jpeg";
 import SophiaWilliamsAvatar from "@/assets/avatar/pexels-photo-16196205.jpeg";
@@ -80,7 +86,7 @@ const usePopup = (props, emit) => {
       //   "Switched user successfully! The current user is: " +
       //     JSON.parse(props.localUserList)[selectedUserId]["name"]
       // );
-      message.success("Switch user successfully!");
+      message.success("用户登录成功");
     }, 0);
   };
   return {
@@ -90,6 +96,7 @@ const usePopup = (props, emit) => {
     selectedUserId,
     onHandleClose,
     onHandleSubmit,
+    
   };
 };
 
@@ -112,6 +119,9 @@ export default defineComponent({
     localUserList: {
       type: String,
     },
+  },
+  components: {
+    UserOutlined
   },
   data() {
     return {
@@ -162,7 +172,17 @@ export default defineComponent({
       selectedUserId,
     } = usePopup(props, emit);
 
+    const cardBodyStyle = ref({
+      padding: "16px 24px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      wordBreak: "break-all",
+      width: "100%",
+    });
+    
     return {
+      cardBodyStyle,
       showPopup,
       loadingPopup,
       onHandleClose,
@@ -178,15 +198,17 @@ export default defineComponent({
 .user-switch-container {
   max-height: 400px;
   overflow-y: auto;
+  /* margin: 10px 15px; */
 }
 
 .user-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: column;
   background-color: #f5f5f5;
   border-radius: 8px;
-  padding: 16px;
+  /* padding: 14px; */
   cursor: pointer;
   margin-bottom: 16px;
   transition: 0.3s;

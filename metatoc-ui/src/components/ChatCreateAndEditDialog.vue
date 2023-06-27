@@ -2,7 +2,7 @@
   <a-modal
     v-if="!isEdit"
     :visible="showPopup"
-    title="New chat"
+    title="新建文件夹"
     @cancel="onHandleClose"
   >
     <a-alert
@@ -47,17 +47,38 @@
     :title="handleTitle(chatState)"
     @cancel="onHandleClose"
   >
-    <a-textarea
+    <!-- <a-textarea
       v-model:value="chatValue"
       placeholder="Please write a poem entitled `Bright Moon`"
       :rows="4"
       :disabled="demo"
       v-if="chatState == 'off-chain'"
-    />
-    <span v-else>{{ chatValue }}</span>
+    /> -->
+    <!-- <span v-else>{{ chatValue }}</span> -->
+    <div>
+      <ul>
+        <li v-for="(item,$index) in txtList.value" 
+          :key="$index"
+          :style="{
+            listStyleType: 'none',
+            margin: '10px auto'
+          }"
+          
+        >
+          <span>文件名称:</span>
+          <a-button 
+            style="cursor: 'pointer'," 
+            type="link"
+            @click="downLoadfile(item.file_name)"
+          >
+            {{ item.file_name.split("/")[2].toString() }}
+          </a-button>
+        </li>
+      </ul>
+    </div>
     <template #footer>
-      <a-button @click="onHandleClose">Cancel</a-button>
-      <a-button
+      <a-button @click="onHandleClose">取消</a-button>
+      <!-- <a-button
         type="danger"
         @click="onHandleDelete"
         :loading="loadingPopup"
@@ -84,7 +105,7 @@
         :loading="loadingPopup"
         v-if="chatState == 'off-chain' && nodeStatus == 'Running'"
         >{{ handleToChainText() }}</a-button
-      >
+      > -->
     </template>
   </a-modal>
 </template>
@@ -92,6 +113,7 @@
 <script>
 import { ref, watchEffect } from "vue";
 import { message } from "ant-design-vue";
+import { $get } from "../utils/request";
 
 const usePopup = (props, emit) => {
   const showPopup = ref(false);
@@ -101,18 +123,21 @@ const usePopup = (props, emit) => {
   const demo = ref(false);
   const chatState = ref("");
   const alertVisible = ref(false);
+  const txtList = ref([])
   watchEffect(() => {
+    txtList.value = props.chatData || []
     showPopup.value = props.visible || false;
     loadingPopup.value = props.loading || false;
-    chatUuid.value = props.chatData.uuid || "";
-    chatValue.value = props.chatData.chat || "";
-    demo.value = props.chatData.demo || false;
-    chatState.value = props.chatData.state || "off-chain";
+    // chatUuid.value = props.chatData.uuid || "";
+    // chatValue.value = props.chatData.chat || "";
+    // demo.value = props.chatData.demo || false;
+    // chatState.value = props.chatData.state || "off-chain";
     alertVisible.value = false;
   });
   const onHandleClose = () => {
     if (loadingPopup.value == false) {
       emit("popupClose");
+      txtList.value = []
     }
   };
   const onHandleDelete = () => {
@@ -148,6 +173,7 @@ const usePopup = (props, emit) => {
     }
   };
   return {
+    txtList,
     showPopup,
     loadingPopup,
     chatUuid,
@@ -174,7 +200,7 @@ export default {
       default: false,
     },
     chatData: {
-      type: Object,
+      type: Array,
     },
     nodeStatus: {
       type: String,
@@ -182,6 +208,7 @@ export default {
   },
   setup(props, { emit }) {
     const {
+      txtList,
       showPopup,
       loadingPopup,
       chatUuid,
@@ -195,6 +222,20 @@ export default {
       onHandleToChain,
     } = usePopup(props, emit);
 
+    const downLoadfile = (item) => {
+      $get("/metatoc-service/v1/metadata/download", {
+        "object_name": item
+      }).then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', item);
+        document.body.appendChild(link);
+        link.click();
+      })
+    }
+
+
     const handleToChainText = () => {
       if (loadingPopup.value == true) {
         return "Add Chat to Blockchain...";
@@ -207,11 +248,13 @@ export default {
       if (chatState == "on-chain") {
         return "View chat";
       } else {
-        return "Edit chat";
+        return "文件列表";
       }
     };
 
     return {
+      downLoadfile,
+      txtList,
       showPopup,
       loadingPopup,
       chatUuid,

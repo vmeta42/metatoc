@@ -29,7 +29,7 @@
           {{ avatarValue }}
         </a-avatar> -->
         <!-- <p>{{ JSON.parse(localCurrentUser)["avatar"] }}</p> -->
-        <a-avatar
+        <!-- <a-avatar
           :size="36"
           :src="handleUserAvatar(JSON.parse(localCurrentUser)['avatar'])"
           :style="{ cursor: 'pointer' }"
@@ -41,8 +41,8 @@
             paddingLeft: '6px',
             cursor: 'pointer',
           }"
-          @click="onOpenSwitchUserPopup"
-        />
+          @click="onOpenSwitchUserPopup" -->
+        <!-- /> -->
         <!-- <a-button
           size="small"
           :style="{ marginLeft: '16px', verticalAlign: 'middle' }"
@@ -52,53 +52,83 @@
         </a-button> -->
       </div>
     </a-layout-header>
-    <a-layout>
-      <a-layout-sider width="200" style="background: #fff">
+    <a-layout style="height: 400px;">
+      <Spin class="example" v-if="loadingState" />
+      <a-layout-sider width="280" style="background: #fff;height: 400px;">
+        <!-- 人物 -->
+        <switch-user-dialog
+          :userList="userList"
+          :avatarSrc="avatarSrc"
+          :localCurrentUser="localCurrentUser"
+          :localUserList="localUserList"
+          @popupClose="onCloseSwitchUserPopup"
+          @popupSubmit="onSubmitSwitchUserPopup"
+        />
+      </a-layout-sider>
+      <a-layout-sider width="260" style="background: #fff;margin-left: 24px;overflow: auto;">
+        <!-- 新建 -->
         <a-card
           class="hovered"
           :bordered="false"
-          style="width: 200px"
           :bodyStyle="cardBodyStyle"
           @click="onOpenPopup()"
         >
           <plus-outlined />
-          <span :style="{ paddingLeft: '14px' }">New chat</span>
+          <span :style="{ paddingLeft: '14px' }">新建数据</span>
         </a-card>
         <a-divider style="margin: 0px 0px" />
-        <a-card
-          v-for="item in renderChatArray"
-          :key="item.uuid"
-          class="hovered"
-          :bordered="false"
-          style="width: 200px"
-          :bodyStyle="cardBodyStyle"
-          @click="onOpenPopup(item)"
-        >
-          <cloud-outlined v-if="item.state == 'off-chain'" />
-          <cloud-upload-outlined v-else />
-          <span :style="{ paddingLeft: '14px' }">{{ item.chat }}</span>
-        </a-card>
+        <div v-if="newDataList.list">
+          <a-card
+            v-for="(item, $index) in newDataList.list"
+            :key="$index"
+            class="hovered cardList"
+            :bordered="false"
+            :bodyStyle="cardBodyStyle"
+            @click="onOpenPopup('detail',item)"
+          >
+            <span v-if="item" :style="{ paddingLeft: '14px' }">
+              {{ item.file_name.split("/")[1].toString() }}
+            </span>
+            <!-- .file_name.split("/")[1].toString() -->
+          </a-card>
+        </div>
+        <div 
+          v-else 
+          style="display:flex;
+          justify-content: center;
+          align-items:center;
+          height:300px">
+          <div>
+            暂无数据
+          </div>
+        </div>
       </a-layout-sider>
-      <a-layout style="padding: 0 0 0 24px">
+      <a-layout style="padding: 0 0 0 24px;min-height: 400px;">
         <a-layout-content
           :style="{
             background: '#fff',
             margin: 0,
-            minHeight: '280px',
+            minHeight: '400px',
           }"
         >
           <a-card :bordered="false" :bodyStyle="cardBodyStyle">
             <block-outlined />
-            <span :style="{ paddingLeft: '14px' }">On chain chat</span>
+            <span :style="{ paddingLeft: '14px' }">上链数据</span>
+            <span>
+              <a-button size="small" style="float:right" @click="upChainData">
+                <UploadOutlined />
+                一键上链数据
+              </a-button>
+            </span>
           </a-card>
 
           <a-divider style="margin: 0px 0px" />
 
-          <div style="padding: 24px">
-            <ul class="nav">
+          <div>
+            <ul class="nav" v-if="newChainDataList.value">
               <li
-                v-for="(item, index) in renderOnChainChatArray"
-                :key="item.uuid"
+                v-for="(item, $index) in newChainDataList.value"
+                :key="$index"
               >
                 <!-- <a-card style="width: 300px"> -->
                 <a-card :style="handleLiCardStyle(item, index)">
@@ -111,29 +141,35 @@
                               fontSize: '12px',
                               fontWeight: 'normal',
                               color: 'rgba(0, 0, 0, 0.45)',
+                              lineHeight: '32px',
                             }"
-                            >{{
-                              moment(Number(item.updateAt)).format(
-                                "YYYY-MM-DD HH:mm:ss"
-                              )
-                            }}</span
+                            >
+                            <!-- {{
+                            moment(Number(item.file_name)).format(
+                              "YYYY-MM-DD HH:mm:ss"
+                            )
+                            }} -->
+                            <!-- {{ newCurrentUser.avatar }} -->
+                            {{ `上链Path为: ${item}` }}
+                            </span
                           >
                         </div>
-                        <span>{{ item.chat }}</span>
                       </template>
                       <template #avatar>
                         <div
                           :style="{
-                            paddingTop: '6px',
+                            // paddingTop: '6px',
                           }"
                         >
+                          <a-avatar :src="handleUserAvatar()" />
                           <!-- <a-avatar
                             src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
                           /> -->
-                          <a-avatar
+                          <!-- <a-avatar
                             :size="36"
                             :src="handleUserAvatar(item.avatarSrc[0])"
-                          />
+                          /> -->
+                          
                         </div>
                       </template>
                     </a-card-meta>
@@ -151,10 +187,10 @@
                           overflow: hidden;
                         "
                       >
-                        <span>{{ item.reply }}</span>
+                        <span> Tooltip: 此处是链上数据,若您有权限查看此条数据,可以点击放大查看具体数据,也可以点击share进行分享。 </span>
                       </div>
                     </template>
-                    <template #avatar>
+                    <!-- <template #avatar>
                       <svg
                         width="36"
                         height="36"
@@ -169,16 +205,18 @@
                           fill="currentColor"
                         ></path>
                       </svg>
-                    </template>
+                    </template> -->
                   </a-card-meta>
                   <template #actions>
                     <expand-alt-outlined
                       key="expand"
-                      @click="onOpenViewPopup(item)"
+                      @click="onNewOpenViewPopup(item)"
                     />
                     <chat-share-dialog
+                      :newUserList="newUserList"
                       :item="item"
                       :userList="userList"
+                      :newCurrentUser="newCurrentUser"
                       :nodeStatus="nodeStatus"
                       @shareSubmit="shareSubmit"
                     ></chat-share-dialog>
@@ -186,52 +224,65 @@
                 </a-card>
               </li>
             </ul>
+            <div 
+              v-else 
+              style="display:flex;
+              justify-content: center;
+              align-items:center;
+              height:300px">
+              <div>
+                暂无数据
+              </div>
+            </div>
           </div>
 
           <a-divider style="margin: 0px 0px" />
-
-          <a-card :bordered="false" :bodyStyle="cardBodyStyle">
-            <deployment-unit-outlined />
-            <span :style="{ paddingLeft: '14px' }">Node status</span>
-            <span :style="{ color: '#1890ff' }" v-if="nodeStatus == 'Running'"
-              >&nbsp;(💙Running
-            </span>
-            <span
-              class="heartbeat-text"
-              :style="{ color: '#1890ff' }"
-              v-if="nodeStatus == 'Running'"
-            >
-              Beng~ Beng~
-            </span>
-            <span :style="{ color: '#1890ff' }" v-if="nodeStatus == 'Running'"
-              >)
-            </span>
-            <!-- <div class="heartbeat-text"></div> -->
-            <span
-              :style="{ color: '#f5222d' }"
-              v-else-if="nodeStatus == 'Stopped'"
-              >&nbsp;(💔Stopped)
-            </span>
-            <!-- <div id="container" /> -->
-          </a-card>
-
-          <a-divider style="margin: 0px 0px" />
-
-          <a-card :bordered="false" :bodyStyle="cardBodyStyle">
-            <node-controller-vue
-              @nodeStatusChange="onNodeStatusChange"
-            ></node-controller-vue>
-          </a-card>
         </a-layout-content>
       </a-layout>
     </a-layout>
+    <a-layout>
+    <a-layout-footer style="padding: 24px 0px;">
+      <a-card :bordered="false" :bodyStyle="cardBodyStyle">
+        <deployment-unit-outlined />
+        <span :style="{ paddingLeft: '14px' }">Node status</span>
+        <span :style="{ color: '#1890ff' }" v-if="nodeStatus == 'Running'"
+          >&nbsp;(💙Running
+        </span>
+        <span
+          class="heartbeat-text"
+          :style="{ color: '#1890ff' }"
+          v-if="nodeStatus == 'Running'"
+        >
+          Beng~ Beng~
+        </span>
+        <span :style="{ color: '#1890ff' }" v-if="nodeStatus == 'Running'"
+          >)
+        </span>
+        <!-- <div class="heartbeat-text"></div> -->
+        <span
+          :style="{ color: '#f5222d' }"
+          v-else-if="nodeStatus == 'Stopped'"
+          >&nbsp;(💔Stopped)
+        </span>
+        <!-- <div id="container" /> -->
+      </a-card>
+
+      <a-divider style="margin: 0px 0px" />
+
+      <a-card :bordered="false" :bodyStyle="cardBodyStyle">
+        <node-controller-vue
+          @nodeStatusChange="onNodeStatusChange"
+        ></node-controller-vue>
+      </a-card>
+    </a-layout-footer>
+  </a-layout>
   </a-layout>
 
   <chat-create-and-edit-dialog
-    :visible="visible"
+    :visible="newDataListDetail"
     :loading="loading"
-    :isEdit="isEdit"
-    :chatData="chatData"
+    :isEdit="newIsEdit"
+    :chatData="newDataListDetailData"
     :nodeStatus="nodeStatus"
     @popupClose="onClosePopup"
     @popupDelete="onDeletePopup"
@@ -239,74 +290,97 @@
     @popupToChain="onToChainPopup"
   />
   <chat-on-chain-view-dialog
-    :visible="chatViewDialogVisible"
-    :onChainChatData="onChainChatData"
-    @popupClose="onCloseViewPopup"
-  />
-  <switch-user-dialog
-    :visible="switchUserDialogVisible"
-    :userList="userList"
-    :avatarSrc="avatarSrc"
-    :localCurrentUser="localCurrentUser"
-    :localUserList="localUserList"
-    @popupClose="onCloseSwitchUserPopup"
-    @popupSubmit="onSubmitSwitchUserPopup"
+    :visible="viewDataVisible"
+    :newCurrentUser="newCurrentUser"
+    :nowViewData="nowViewData"
+    @popupClose="onNewCloseViewPopup"
   />
   <full-loading-vue :fullLoading="fullLoading"></full-loading-vue>
 </template>
 <script>
-import { ref, defineComponent, watchEffect } from "vue";
+import { ref, defineComponent, watchEffect, reactive } from "vue";
 import {
   PlusOutlined,
-  CloudOutlined,
+  // CloudOutlined,
   BlockOutlined,
   DeploymentUnitOutlined,
   ExpandAltOutlined,
+  UploadOutlined,
   // ShareAltOutlined,
-  CloudUploadOutlined,
-  CaretDownOutlined,
+  // CloudUploadOutlined,
+  // CaretDownOutlined,
 } from "@ant-design/icons-vue";
+import { message, Spin } from "ant-design-vue";
 import ChatCreateAndEditDialog from "./components/ChatCreateAndEditDialog.vue";
 import ChatOnChainViewDialog from "./components/ChatOnChainViewDialog.vue";
 import ChatShareDialog from "./components/ChatShareDialog.vue";
 import SwitchUserDialog from "./components/SwitchUserDialog.vue";
 import NodeControllerVue from "./components/NodeController.vue";
-import { v4 as uuidv4 } from "uuid";
 import { $post } from "./utils/request";
 import moment from "moment";
 import EmilyJohnsonAvatar from "@/assets/avatar/pexels-photo-16187929.jpeg";
 import MichaelSmithAvatar from "@/assets/avatar/pexels-photo-16161525.jpeg";
 import SophiaWilliamsAvatar from "@/assets/avatar/pexels-photo-16196205.jpeg";
-import { message } from "ant-design-vue";
 import { initChatString, initOnChainChatString } from "./utils/contents";
 import FullLoadingVue from "./components/FullLoading.vue";
-import { dataInitialization } from "./utils/init";
-import { create } from "./utils/block";
+// import { dataInitialization } from "./utils/init";
+import { signup } from "./utils/block";
 
-const usePopup = (props, emit, { chatArray, onChainChatArray }) => {
+const usePopup = (props, emit, { chatArray }) => {
   const visible = ref(false);
   const loading = ref(false);
   const isEdit = ref(false);
   const chatData = ref({});
-  const onOpenPopup = (thisChatData) => {
-    if (thisChatData == undefined) {
-      // New chat
-      visible.value = true;
-      loading.value = false;
-      isEdit.value = false;
-      chatData.value = {};
-    } else {
-      // Edit chat
-      visible.value = true;
-      loading.value = false;
-      isEdit.value = true;
-      chatData.value = thisChatData;
-    }
-  };
-  const onClosePopup = () => {
-    visible.value = false;
-    loading.value = false;
-  };
+  const loadingState = ref(false)
+  const infoParams = reactive({
+    address: "",
+    private_key: "",
+  })
+  // const onOpenPopup = (address, key) => {
+  //   infoParams.address = address
+  //   infoParams.private_key = key
+  //   console.log(infoParams);
+  //   if (!address && !key) {
+  //     return message.error("钱包地址错误请重新登陆")
+  //   } else if (address && key) {
+      
+  //     // New chat
+  //     // visible.value = true;
+  //     // loading.value = false;
+  //     // isEdit.value = false;
+  //     loadingState.value = true
+  //     chatData.value = {};
+  //     $post("/metatoc-service/v1/metadata/upload", {
+  //       "address": JSON.parse(localStorage.getItem("currentUser")).address,
+  //       "private_key": JSON.parse(localStorage.getItem("currentUser")).privateKey,
+  //     }).then(() => {
+  //       getFolderList(JSON.parse(localStorage.getItem("currentUser")).address)
+  //       loadingState.value = false
+  //       message.success("新建文件夹成功")
+  //     })
+  //   } else if (address.file_name) {
+      
+  //     getTxtList(address.file_name.slice("/",-1))
+  //     // Edit chat
+  //     visible.value = true;
+  //     loading.value = false;
+  //     isEdit.value = true;
+  //     // chatData.value = thisChatData;
+  //   }
+  // };
+  const renderChatArray = ref([]);
+  const renderOnChainChatArray = ref([]);
+
+  
+
+  
+
+  
+
+  // const onClosePopup = () => {
+  //   visible.value = false;
+  //   loading.value = false;
+  // };
   const onDeletePopup = ({ chatUuid, chatValue }) => {
     console.log("call func [onDeletePopup]");
     console.log("chatUuid==>", chatUuid);
@@ -326,254 +400,271 @@ const usePopup = (props, emit, { chatArray, onChainChatArray }) => {
     visible.value = false;
     loading.value = false;
   };
-  const onSubmitPopup = ({ chatUuid, chatValue }) => {
-    const newChatArray = [];
-    if (chatArray.value.length == 0) {
-      const chatObject = {
-        uuid: uuidv4(),
-        chat: chatValue.value,
-        reply: "",
-        state: "off-chain",
-        users: [JSON.parse(localStorage.getItem("currentUser"))["name"]],
-        createAt: Date.now(),
-        updateAt: Date.now(),
-      };
-      newChatArray.push(chatObject);
-    } else {
-      chatArray.value.reverse();
-      let inChatArray = false;
-      chatArray.value.forEach((element) => {
-        if (element.uuid == chatUuid.value) {
-          inChatArray = true;
-          element.chat = chatValue.value;
-          element.updateAt = Date.now();
-        }
-        newChatArray.push(element);
-      });
-      if (inChatArray == false) {
-        const chatObject = {
-          uuid: uuidv4(),
-          chat: chatValue.value,
-          reply: "",
-          state: "off-chain",
-          users: [JSON.parse(localStorage.getItem("currentUser"))["name"]],
-          createAt: Date.now(),
-          updateAt: Date.now(),
-        };
-        newChatArray.push(chatObject);
-      }
-    }
-    localStorage.setItem("chat", JSON.stringify(newChatArray));
-    newChatArray.reverse();
-    chatArray.value = newChatArray;
-    visible.value = false;
-    loading.value = false;
-  };
+  const onSubmitPopup = () => {
+  //   const newChatArray = [];
+  //   if (chatArray.value.length == 0) {
+  //     const chatObject = {
+  //       uuid: uuidv4(),
+  //       chat: chatValue.value,
+  //       reply: "",
+  //       state: "off-chain",
+  //       users: [JSON.parse(localStorage.getItem("currentUser"))["name"]],
+  //       createAt: Date.now(),
+  //       updateAt: Date.now(),
+  //     };
+  //     newChatArray.push(chatObject);
+  //   } else {
+  //     chatArray.value.reverse();
+  //     let inChatArray = false;
+  //     chatArray.value.forEach((element) => {
+  //       if (element.uuid == chatUuid.value) {
+  //         inChatArray = true;
+  //         element.chat = chatValue.value;
+  //         element.updateAt = Date.now();
+  //       }
+  //       newChatArray.push(element);
+  //     });
+  //     if (inChatArray == false) {
+  //       const chatObject = {
+  //         uuid: uuidv4(),
+  //         chat: chatValue.value,
+  //         reply: "",
+  //         state: "off-chain",
+  //         users: [JSON.parse(localStorage.getItem("currentUser"))["name"]],
+  //         createAt: Date.now(),
+  //         updateAt: Date.now(),
+  //       };
+  //       newChatArray.push(chatObject);
+  //     }
+  //   }
+  //   localStorage.setItem("chat", JSON.stringify(newChatArray));
+  //   newChatArray.reverse();
+  //   chatArray.value = newChatArray;
+  //   visible.value = false;
+  //   loading.value = false;
+   };
 
-  const onToChainPopup = ({ chatUuid, chatValue }) => {
-    $post("/sendMsg", { msg: chatValue.value }).then(
-      (res) => {
-        let chatObject = {};
-        if (chatUuid.value == "") {
-          chatObject = {
-            uuid: uuidv4(),
-            chat: chatValue.value,
-            reply: res.data,
-            state: "on-chain",
-            users: [JSON.parse(localStorage.getItem("currentUser"))["name"]],
-            avatarSrc: [
-              JSON.parse(localStorage.getItem("currentUser"))["avatar"],
-            ],
-            createAt: Date.now(),
-            updateAt: Date.now(),
-          };
-        } else {
-          chatArray.value.forEach((element) => {
-            if (element.uuid == chatUuid.value) {
-              chatObject = {
-                uuid: element.uuid,
-                chat: element.chat,
-                reply: res.data,
-                state: "on-chain",
-                users: [
-                  JSON.parse(localStorage.getItem("currentUser"))["name"],
-                ],
-                avatarSrc: [
-                  JSON.parse(localStorage.getItem("currentUser"))["avatar"],
-                ],
-                createAt: element.createAt,
-                updateAt: Date.now(),
-              };
-            }
-          });
-        }
-        console.log("chatObject==>", chatObject);
-        console.log("chatObject.length==>", Object.keys(chatObject).length);
-        if (Object.keys(chatObject).length != 0) {
-          create(
-            JSON.parse(localStorage.getItem("currentUser"))["private_key"],
-            JSON.parse(localStorage.getItem("currentUser"))["address"],
-            "/" + chatObject["uuid"],
-            JSON.stringify({
-              chat: chatObject["chat"],
-              reply: chatObject["reply"],
-            })
-          ).then(
-            (res) => {
-              console.log(res);
-              if (chatUuid.value == "") {
-                chatArray.value.unshift(chatObject);
-                onChainChatArray.value.unshift(chatObject);
-              } else {
-                chatArray.value.forEach((element) => {
-                  if (element.uuid == chatUuid.value) {
-                    element.reply = chatObject["reply"];
-                    element.state = chatObject["state"];
-                    element.users = chatObject["users"];
-                    element.avatarSrc = chatObject["avatarSrc"];
-                    element.updateAt = chatObject["updateAt"];
-                  }
-                });
-                onChainChatArray.value.unshift(chatObject);
-              }
-              visible.value = false;
-              loading.value = false;
-              const localChatArray = chatArray.value;
-              const localOnChainChatArray = onChainChatArray.value;
-              localStorage.setItem(
-                "chat",
-                JSON.stringify(localChatArray.slice().reverse())
-              );
-              localStorage.setItem(
-                "onChainChat",
-                JSON.stringify(localOnChainChatArray.slice().reverse())
-              );
-              message.success("Chat successfully added to the blockchain!");
-            },
-            (err) => {
-              console.log(err);
-              visible.value = true;
-              loading.value = false;
-              message.success("Chat failed to be added to the blockchain!");
-            }
-          );
-        }
-      },
-      (err) => {
-        console.log("err==>", err);
-        let chatObject = {};
-        if (chatUuid.value == "") {
-          chatObject = {
-            uuid: uuidv4(),
-            chat: chatValue.value,
-            reply:
-              "Unable to connect to ChatGPT service, please check your network connection or try again later.",
-            state: "on-chain",
-            users: [JSON.parse(localStorage.getItem("currentUser"))["name"]],
-            avatarSrc: [
-              JSON.parse(localStorage.getItem("currentUser"))["avatar"],
-            ],
-            createAt: Date.now(),
-            updateAt: Date.now(),
-          };
-        } else {
-          chatArray.value.forEach((element) => {
-            if (element.uuid == chatUuid.value) {
-              chatObject = {
-                uuid: element.uuid,
-                chat: element.chat,
-                reply: element.reply
-                  ? element.reply
-                  : "Unable to connect to ChatGPT service, please check your network connection or try again later.",
-                state: "on-chain",
-                users: [
-                  JSON.parse(localStorage.getItem("currentUser"))["name"],
-                ],
-                avatarSrc: [
-                  JSON.parse(localStorage.getItem("currentUser"))["avatar"],
-                ],
-                createAt: element.createAt,
-                updateAt: Date.now(),
-              };
-            }
-          });
-        }
-        console.log("chatObject==>", chatObject);
-        console.log("chatObject.length==>", Object.keys(chatObject).length);
-        if (Object.keys(chatObject).length != 0) {
-          create(
-            JSON.parse(localStorage.getItem("currentUser"))["private_key"],
-            JSON.parse(localStorage.getItem("currentUser"))["address"],
-            "/" + chatObject["uuid"],
-            JSON.stringify({
-              chat: chatObject["chat"],
-              reply: chatObject["reply"],
-            })
-          ).then(
-            (res) => {
-              console.log(res);
-              if (chatUuid.value == "") {
-                chatArray.value.unshift(chatObject);
-                onChainChatArray.value.unshift(chatObject);
-              } else {
-                chatArray.value.forEach((element) => {
-                  if (element.uuid == chatUuid.value) {
-                    element.reply = chatObject["reply"];
-                    element.state = chatObject["state"];
-                    element.users = chatObject["users"];
-                    element.avatarSrc = chatObject["avatarSrc"];
-                    element.updateAt = chatObject["updateAt"];
-                  }
-                });
-                onChainChatArray.value.unshift(chatObject);
-              }
-              visible.value = false;
-              loading.value = false;
-              const localChatArray = chatArray.value;
-              const localOnChainChatArray = onChainChatArray.value;
-              localStorage.setItem(
-                "chat",
-                JSON.stringify(localChatArray.slice().reverse())
-              );
-              localStorage.setItem(
-                "onChainChat",
-                JSON.stringify(localOnChainChatArray.slice().reverse())
-              );
-              message.success("Chat successfully added to the blockchain!");
-            },
-            (err) => {
-              console.log(err);
-              visible.value = true;
-              loading.value = false;
-              message.success("Chat failed to be added to the blockchain!");
-            }
-          );
-        }
-      }
-    );
-  };
+   const onToChainPopup = () => {
+  //   $post("/sendMsg", { msg: chatValue.value }).then(
+  //     (res) => {
+  //       let chatObject = {};
+  //       if (chatUuid.value == "") {
+  //         chatObject = {
+  //           uuid: uuidv4(),
+  //           chat: chatValue.value,
+  //           reply: res.data,
+  //           state: "on-chain",
+  //           users: [JSON.parse(localStorage.getItem("currentUser"))["name"]],
+  //           avatarSrc: [
+  //             JSON.parse(localStorage.getItem("currentUser"))["avatar"],
+  //           ],
+  //           createAt: Date.now(),
+  //           updateAt: Date.now(),
+  //         };
+  //       } else {
+  //         chatArray.value.forEach((element) => {
+  //           if (element.uuid == chatUuid.value) {
+  //             chatObject = {
+  //               uuid: element.uuid,
+  //               chat: element.chat,
+  //               reply: res.data,
+  //               state: "on-chain",
+  //               users: [
+  //                 JSON.parse(localStorage.getItem("currentUser"))["name"],
+  //               ],
+  //               avatarSrc: [
+  //                 JSON.parse(localStorage.getItem("currentUser"))["avatar"],
+  //               ],
+  //               createAt: element.createAt,
+  //               updateAt: Date.now(),
+  //             };
+  //           }
+  //         });
+  //       }
+  //       console.log("chatObject==>", chatObject);
+  //       console.log("chatObject.length==>", Object.keys(chatObject).length);
+  //       if (Object.keys(chatObject).length != 0) {
+  //         create(
+  //           JSON.parse(localStorage.getItem("currentUser"))["private_key"],
+  //           JSON.parse(localStorage.getItem("currentUser"))["address"],
+  //           "/" + chatObject["uuid"],
+  //           JSON.stringify({
+  //             chat: chatObject["chat"],
+  //             reply: chatObject["reply"],
+  //           })
+  //         ).then(
+  //           (res) => {
+  //             console.log(res);
+  //             if (chatUuid.value == "") {
+  //               chatArray.value.unshift(chatObject);
+  //               onChainChatArray.value.unshift(chatObject);
+  //             } else {
+  //               chatArray.value.forEach((element) => {
+  //                 if (element.uuid == chatUuid.value) {
+  //                   element.reply = chatObject["reply"];
+  //                   element.state = chatObject["state"];
+  //                   element.users = chatObject["users"];
+  //                   element.avatarSrc = chatObject["avatarSrc"];
+  //                   element.updateAt = chatObject["updateAt"];
+  //                 }
+  //               });
+  //               onChainChatArray.value.unshift(chatObject);
+  //             }
+  //             visible.value = false;
+  //             loading.value = false;
+  //             const localChatArray = chatArray.value;
+  //             const localOnChainChatArray = onChainChatArray.value;
+  //             localStorage.setItem(
+  //               "chat",
+  //               JSON.stringify(localChatArray.slice().reverse())
+  //             );
+  //             localStorage.setItem(
+  //               "onChainChat",
+  //               JSON.stringify(localOnChainChatArray.slice().reverse())
+  //             );
+  //             message.success("Chat successfully added to the blockchain!");
+  //           },
+  //           (err) => {
+  //             console.log(err);
+  //             visible.value = true;
+  //             loading.value = false;
+  //             message.success("Chat failed to be added to the blockchain!");
+  //           }
+  //         );
+  //       }
+  //     },
+  //     (err) => {
+  //       console.log("err==>", err);
+  //       let chatObject = {};
+  //       if (chatUuid.value == "") {
+  //         chatObject = {
+  //           uuid: uuidv4(),
+  //           chat: chatValue.value,
+  //           reply:
+  //             "Unable to connect to ChatGPT service, please check your network connection or try again later.",
+  //           state: "on-chain",
+  //           users: [JSON.parse(localStorage.getItem("currentUser"))["name"]],
+  //           avatarSrc: [
+  //             JSON.parse(localStorage.getItem("currentUser"))["avatar"],
+  //           ],
+  //           createAt: Date.now(),
+  //           updateAt: Date.now(),
+  //         };
+  //       } else {
+  //         chatArray.value.forEach((element) => {
+  //           if (element.uuid == chatUuid.value) {
+  //             chatObject = {
+  //               uuid: element.uuid,
+  //               chat: element.chat,
+  //               reply: element.reply
+  //                 ? element.reply
+  //                 : "Unable to connect to ChatGPT service, please check your network connection or try again later.",
+  //               state: "on-chain",
+  //               users: [
+  //                 JSON.parse(localStorage.getItem("currentUser"))["name"],
+  //               ],
+  //               avatarSrc: [
+  //                 JSON.parse(localStorage.getItem("currentUser"))["avatar"],
+  //               ],
+  //               createAt: element.createAt,
+  //               updateAt: Date.now(),
+  //             };
+  //           }
+  //         });
+  //       }
+  //       console.log("chatObject==>", chatObject);
+  //       console.log("chatObject.length==>", Object.keys(chatObject).length);
+  //       if (Object.keys(chatObject).length != 0) {
+  //         create(
+  //           JSON.parse(localStorage.getItem("currentUser"))["private_key"],
+  //           JSON.parse(localStorage.getItem("currentUser"))["address"],
+  //           "/" + chatObject["uuid"],
+  //           JSON.stringify({
+  //             chat: chatObject["chat"],
+  //             reply: chatObject["reply"],
+  //           })
+  //         ).then(
+  //           (res) => {
+  //             console.log(res);
+  //             if (chatUuid.value == "") {
+  //               chatArray.value.unshift(chatObject);
+  //               onChainChatArray.value.unshift(chatObject);
+  //             } else {
+  //               chatArray.value.forEach((element) => {
+  //                 if (element.uuid == chatUuid.value) {
+  //                   element.reply = chatObject["reply"];
+  //                   element.state = chatObject["state"];
+  //                   element.users = chatObject["users"];
+  //                   element.avatarSrc = chatObject["avatarSrc"];
+  //                   element.updateAt = chatObject["updateAt"];
+  //                 }
+  //               });
+  //               onChainChatArray.value.unshift(chatObject);
+  //             }
+  //             visible.value = false;
+  //             loading.value = false;
+  //             const localChatArray = chatArray.value;
+  //             const localOnChainChatArray = onChainChatArray.value;
+  //             localStorage.setItem(
+  //               "chat",
+  //               JSON.stringify(localChatArray.slice().reverse())
+  //             );
+  //             localStorage.setItem(
+  //               "onChainChat",
+  //               JSON.stringify(localOnChainChatArray.slice().reverse())
+  //             );
+  //             message.success("Chat successfully added to the blockchain!");
+  //           },
+  //           (err) => {
+  //             console.log(err);
+  //             visible.value = true;
+  //             loading.value = false;
+  //             message.success("Chat failed to be added to the blockchain!");
+  //           }
+  //         );
+  //       }
+  //     }
+  //   );
+   };
 
   const onOpenSharePopup = (thisChatData) => {
     console.log(thisChatData);
   };
   return {
+    infoParams,
+    loadingState,
     visible,
     loading,
     isEdit,
     chatData,
-    onOpenPopup,
-    onClosePopup,
+    // onOpenPopup,
+    // onClosePopup,
     onDeletePopup,
     onSubmitPopup,
     onToChainPopup,
     onOpenSharePopup,
+    // getFolderList,
+    // getTxtList,
+    renderChatArray,
+    renderOnChainChatArray,
   };
 };
 
 const useViewPopup = () => {
+
+  // 获取view详情数据
+  const viewData = (data) => {
+    $post("/metatoc-service/v1/blockchain/view",
+      data
+    ).then((res) => {
+      console.log(res);
+    })
+  }
+
   const chatViewDialogVisible = ref(false);
   const onChainChatData = ref({});
   const onOpenViewPopup = (thisOnChainChatData) => {
+    console.log(thisOnChainChatData);
     chatViewDialogVisible.value = true;
     onChainChatData.value = thisOnChainChatData;
   };
@@ -585,6 +676,7 @@ const useViewPopup = () => {
     onChainChatData,
     onOpenViewPopup,
     onCloseViewPopup,
+    viewData
   };
 };
 
@@ -629,29 +721,43 @@ const switchUserPopup = ({ userList, avatarSrc }) => {
   const onCloseSwitchUserPopup = () => {
     switchUserDialogVisible.value = false;
   };
-  const onSubmitSwitchUserPopup = (selectedUserId) => {
-    console.log("selectedUserId==>", selectedUserId);
-    let localCurrentUserObject = {};
-    let localUserListArray = JSON.parse(localStorage.getItem("userList"));
-    localUserListArray.forEach((element) => {
-      if (selectedUserId == element["id"]) {
-        localCurrentUserObject = element;
-        element["lastLogin"] = moment().format("YYYY-MM-DD HH:mm:ss");
-      }
-    });
-    localCurrentUser.value = JSON.stringify(localCurrentUserObject);
-    localStorage.setItem("currentUser", localCurrentUser.value);
-    localUserList.value = JSON.stringify(localUserListArray);
-    localStorage.setItem("userList", localUserList.value);
-    switchUserDialogVisible.value = false;
-  };
+
+  // const onSubmitSwitchUserPopup = (selectedUserId) => {
+  //   $post("/metatoc-service/v1/blockchain/signup")
+  //     .then((res) => {
+  //       const newAddress = res.data.data.address;
+  //       const newPrivateKey = res.data.data.private_key;
+
+  //       let localCurrentUserObject = {};
+  //       let localUserListArray = JSON.parse(localStorage.getItem("userList"));
+  //       localUserListArray.forEach((element) => {
+  //         if (selectedUserId == element["id"]) {
+  //           let id = element["id"];
+  //           localCurrentUserObject = element;
+  //           element["lastLogin"] = moment().format("YYYY-MM-DD HH:mm:ss");
+  //           element.address = element.address ? element.address : newAddress;
+  //           element.privateKey = element.privateKey ? element.privateKey : newPrivateKey;
+  //           element.dataList = JSON.parse(localStorage.getItem("userList"))[id].dataList
+  //         }
+  //       });
+  //       localCurrentUser.value = JSON.stringify(localCurrentUserObject);
+  //       localStorage.setItem("currentUser", localCurrentUser.value);
+  //       localUserList.value = JSON.stringify(localUserListArray);
+  //       localStorage.setItem("userList", localUserList.value);
+  //       switchUserDialogVisible.value = false;
+  //     })
+  //     .catch((err) => {
+  //       console.log("signup resp err==>", err);
+  //       return null;
+  //     });
+  // };
   return {
     switchUserDialogVisible,
     localCurrentUser,
     localUserList,
     onOpenSwitchUserPopup,
     onCloseSwitchUserPopup,
-    onSubmitSwitchUserPopup,
+    // onSubmitSwitchUserPopup,
   };
 };
 
@@ -669,30 +775,32 @@ const nodeStatusChangeClass = () => {
 export default defineComponent({
   components: {
     PlusOutlined,
-    CloudOutlined,
+    // CloudOutlined,
     BlockOutlined,
     DeploymentUnitOutlined,
     ExpandAltOutlined,
     // ShareAltOutlined,
-    CloudUploadOutlined,
-    CaretDownOutlined,
+    // CloudUploadOutlined,
+    // CaretDownOutlined,
     ChatCreateAndEditDialog,
     ChatOnChainViewDialog,
     ChatShareDialog,
     SwitchUserDialog,
     NodeControllerVue,
     FullLoadingVue,
+    Spin,
+    UploadOutlined
   },
   methods: {
     redirctToGithub() {
       window.open("https://github.com/vmeta42/metatoc");
     },
-    handleUserAvatar(avatar) {
-      if (avatar == "@/assets/avatar/pexels-photo-16187929.jpeg") {
+    handleUserAvatar() {
+      if (this.newCurrentUser.value.avatar == "@/assets/avatar/pexels-photo-16187929.jpeg") {
         return EmilyJohnsonAvatar;
-      } else if (avatar == "@/assets/avatar/pexels-photo-16161525.jpeg") {
+      } else if (this.newCurrentUser.value.avatar == "@/assets/avatar/pexels-photo-16161525.jpeg") {
         return MichaelSmithAvatar;
-      } else if (avatar == "@/assets/avatar/pexels-photo-16196205.jpeg") {
+      } else if (this.newCurrentUser.value.avatar == "@/assets/avatar/pexels-photo-16196205.jpeg") {
         return SophiaWilliamsAvatar;
       }
     },
@@ -704,8 +812,218 @@ export default defineComponent({
       SophiaWilliamsAvatar,
     };
   },
+    
   setup(props, emit) {
-    const fullLoading = ref(true);
+    const nowViewData = ref({
+      
+    });
+
+    const newUserList = reactive({
+
+    })
+
+    const newCurrentUser = reactive({
+
+    })
+
+    const newDataList = reactive({
+      list:[]
+    })
+
+    const newChainDataList = reactive([
+
+    ])
+
+    const newDataListDetail = ref(false)
+
+    const newDataListDetailData = reactive([
+
+    ])
+
+    const newIsEdit = ref(false)
+
+    const viewDataVisible = ref(false)
+
+    // 获取文件夹列表
+    const getFolderList = (address) => {
+      $post("/metatoc-service/v1/metadata/listFolders", {
+        address
+      }).then((res) => {
+        newDataList.list = res.data.data
+        // newDataList.list.splice(0, newDataList.list.length, ...res.data.data)
+      })
+    };
+
+    // 获取文件列表
+    const getTxtList = (txtID) => {
+      $post("/metatoc-service/v1/metadata/listFiles", {
+        "object_uuid": txtID
+      }).then((res) => {
+        newDataListDetailData.value = res.data.data
+      })
+    };
+
+    //  获取paths
+    const getPathData = (address,item) => {
+      $post("/metatoc-service/v1/blockchain/list", {
+        address
+      }).then((res) => {
+        newChainDataList.value = res.data.data.paths
+        if (item == "select") {
+          return false 
+        } else {
+           message.success("数据上链成功")
+        }
+        
+        // for(let i = 0; i < newDataList.list.length; i++) {
+        //   newDataList.list[i].path = res.data.data.paths[i]
+        // }
+      })
+    }
+    
+
+    const upChainData = () => {
+      if (newCurrentUser.value == undefined || JSON.stringify(newCurrentUser.value) == "{}") return message.info("请先选择用户")
+      getPathData(newCurrentUser.value.address)
+      // newChainDataList.value = newDataList.list
+    }
+
+    // 新建文件夹or查看详情
+    const onOpenPopup = (type, item) => {
+
+      if (newCurrentUser.value == undefined)  return message.info("请先登录")
+      const {
+        address,
+        privateKey
+      } = newCurrentUser.value
+
+      if (type == "detail") {
+        getTxtList(item.file_name.slice("/", -1))
+        newDataListDetail.value = true
+        newIsEdit.value = true
+
+
+          // Edit chat
+          // visible.value = true;
+          // loading.value = false;
+          // isEdit.value = true;
+          // chatData.value = thisChatData;
+      } else if (!address && !privateKey) {
+        if(JSON.stringify(newCurrentUser.value) == "{}") {
+          return message.info("请先选择用户")
+        } else {
+          return message.error("钱包地址错误请重新登陆")
+        }
+      } else if (address && privateKey) {
+        // New chat
+        // visible.value = true;
+        // loading.value = false;
+        // isEdit.value = false;
+        loadingState.value = true
+        // chatData.value = {};
+        $post("/metatoc-service/v1/metadata/upload", {
+          "address": address,
+          "private_key": privateKey,
+        }).then(() => {
+          getFolderList(address)
+          loadingState.value = false
+          message.success("新建数据成功")
+        })
+      }
+      
+     
+      // else if (address.file_name) {
+        
+      //   // getTxtList(address.file_name.slice("/",-1))
+      //   // Edit chat
+      //   visible.value = true;
+      //   loading.value = false;
+      //   isEdit.value = true;
+      //   // chatData.value = thisChatData;
+      // }
+    };
+
+
+
+    // 人物切换
+    const onSubmitSwitchUserPopup = (selectedUserId) => {
+      $post("/metatoc-service/v1/blockchain/signup")
+        .then((res) => {
+          const newAddress = res.data.data.address;
+          const newPrivateKey = res.data.data.private_key;
+
+          // const newAddress = ''
+          // const newPrivateKey = ""
+
+          let localCurrentUserObject = {};
+          let localUserListArray = JSON.parse(localStorage.getItem("userList"));
+          localUserListArray.forEach((element) => {
+            if (selectedUserId == element["id"]) {
+              let id = element["id"];
+              localCurrentUserObject = element;
+              element["lastLogin"] = moment().format("YYYY-MM-DD HH:mm:ss");
+              element.address = element.address ? element.address : newAddress;
+              element.privateKey = element.privateKey ? element.privateKey : newPrivateKey;
+              element.dataList = JSON.parse(localStorage.getItem("userList"))[id].dataList
+            }
+          });
+          localCurrentUser.value = JSON.stringify(localCurrentUserObject);
+          localStorage.setItem("currentUser", localCurrentUser.value);
+          newCurrentUser.value = JSON.parse(localCurrentUser.value)
+          localUserList.value = JSON.stringify(localUserListArray);
+          localStorage.setItem("userList", localUserList.value);
+          switchUserDialogVisible.value = false;
+          newUserList.value = JSON.parse(localUserList.value)
+          getFolderList(newCurrentUser.value.address)
+          newChainDataList.value = []
+          getPathData(newCurrentUser.value.address,"select")
+        })
+        .catch((err) => {
+          console.log("signup resp err==>", err);
+          return null;
+        });
+    };
+
+    onSubmitSwitchUserPopup("-1")
+
+
+    // dataListclose
+    const onClosePopup = () => {
+      newDataListDetail.value = false;
+    };
+
+    const onNewCloseViewPopup = () => {
+      viewDataVisible.value = false
+    }
+
+    const onNewOpenViewPopup = (item) => {
+      newCurrentUser.value.path = item
+      nowViewData.value = newCurrentUser.value 
+      viewDataVisible.value = true
+    }
+
+    // 获取path
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const fullLoading = ref(false);
+    const address = ref()
+    const privateKey = ref()
 
     const userList = ["Emily Johnson", "Michael Smith", "Sophia Williams"];
     const avatarSrc = [
@@ -713,6 +1031,18 @@ export default defineComponent({
       "@/assets/avatar/pexels-photo-16161525.jpeg",
       "@/assets/avatar/pexels-photo-16196205.jpeg",
     ];
+
+    const currentUser = reactive({
+      id: 0,
+      name: '',
+      avatar: '',
+      lastLogin: '',
+      address: '',
+      privateKey: '',
+    })
+
+
+  
 
     // 初始化chat
     if (!localStorage.getItem("chat")) {
@@ -771,18 +1101,39 @@ export default defineComponent({
     }
 
     const {
+      loadingState,
       visible,
       loading,
       isEdit,
       chatData,
-      onOpenPopup,
-      onClosePopup,
+      // onOpenPopup,
+      // onClosePopup,
       onDeletePopup,
       onSubmitPopup,
       onToChainPopup,
       onOpenSharePopup,
+      renderChatArray,
+      renderOnChainChatArray,
+      // getFolderList
     } = usePopup(props, emit, { chatArray, onChainChatArray });
 
+
+    const getSign = () => {
+      signup().then((res) => {
+        if (res.address == "" && res.private_key == "") {
+          message.error("登录失败")
+        } else {
+          address.value = res.address
+          privateKey.value = res.private_key
+          getFolderList(res.address)
+        }
+      })
+    }
+
+    // getSign()
+
+    
+    
     const {
       chatViewDialogVisible,
       onChainChatData,
@@ -798,6 +1149,17 @@ export default defineComponent({
       wordBreak: "break-all",
       width: "100%",
     });
+    const cardBodyStyleList = ref({
+      padding: "16px 24px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      wordBreak: "break-all",
+      width: "100%",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    })
     const colorList = ["#f56a00", "#f56a10", "#f56a20"];
     const avatarValue = ref(userList[0]);
     const color = ref(colorList[0]);
@@ -810,8 +1172,8 @@ export default defineComponent({
     };
 
     const handleLiCardStyle = (item, index) => {
-      console.log("item==>", item);
-      console.log("index==>", index);
+      // console.log("item==>", item);
+      // console.log("index==>", index);
       if (index == 0) {
         return {
           width: "300px",
@@ -825,6 +1187,7 @@ export default defineComponent({
     };
 
     const shareSubmit = (item) => {
+      console.log(item);
       console.log("in [shareSubmit]");
       console.log("item==>", item);
       const onChainChatArray = JSON.parse(localStorage.getItem("onChainChat"));
@@ -844,76 +1207,104 @@ export default defineComponent({
       localUserList,
       onOpenSwitchUserPopup,
       onCloseSwitchUserPopup,
-      onSubmitSwitchUserPopup,
+      // onSubmitSwitchUserPopup,
     } = switchUserPopup({ userList, avatarSrc });
 
-    const renderChatArray = ref([]);
-    const renderOnChainChatArray = ref([]);
     watchEffect(() => {
       renderChatArray.value = [];
       renderOnChainChatArray.value = [];
-      console.log("localCurrentUser.value==>", localCurrentUser.value);
-      chatArray.value.forEach((element) => {
-        if (
-          element.users.indexOf(JSON.parse(localCurrentUser.value)["name"]) > -1
-        ) {
-          renderChatArray.value.push(element);
-        }
-      });
-      onChainChatArray.value.forEach((element) => {
-        if (
-          element.users.indexOf(JSON.parse(localCurrentUser.value)["name"]) > -1
-        ) {
-          renderOnChainChatArray.value.push(element);
-        }
-      });
+      // console.log("localCurrentUser.value==>", localCurrentUser.value);
+      // chatArray.value.forEach((element) => {
+      //   if (
+      //     element.users.indexOf(JSON.parse(localCurrentUser.value)["name"]) > -1
+      //   ) {
+      //     renderChatArray.value.push(element);
+      //   }
+      // });
+      // onChainChatArray.value.forEach((element) => {
+      //   if (
+      //     element.users.indexOf(JSON.parse(localCurrentUser.value)["name"]) > -1
+      //   ) {
+      //     renderOnChainChatArray.value.push(element);
+      //   }
+      // });
+      // console.log(renderChatArray.value);
     });
 
     const { onNodeStatusChange, nodeStatus } = nodeStatusChangeClass();
+    // dataInitialization();
+    // if (localStorage.getItem("initState") != "Finish") {
+    //   dataInitialization();
+    //   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    //   const checkInitState = async () => {
+    //     let initState = localStorage.getItem("initState");
+    //     while (initState !== "Finish") {
+    //       chat.value = localStorage.getItem("chat") || "";
+    //       if (chat.value != "") {
+    //         chatArray.value = JSON.parse(chat.value);
+    //         chatArray.value.reverse();
+    //       }
 
-    if (localStorage.getItem("initState") != "Finish") {
-      dataInitialization();
-      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-      const checkInitState = async () => {
-        let initState = localStorage.getItem("initState");
-        while (initState !== "Finish") {
-          chat.value = localStorage.getItem("chat") || "";
-          if (chat.value != "") {
-            chatArray.value = JSON.parse(chat.value);
-            chatArray.value.reverse();
-          }
+    //       onChainChat.value = localStorage.getItem("onChainChat") || "";
+    //       if (onChainChat.value != "") {
+    //         onChainChatArray.value = JSON.parse(onChainChat.value);
+    //         onChainChatArray.value.reverse();
+    //       }
 
-          onChainChat.value = localStorage.getItem("onChainChat") || "";
-          if (onChainChat.value != "") {
-            onChainChatArray.value = JSON.parse(onChainChat.value);
-            onChainChatArray.value.reverse();
-          }
+    //       console.log("initState:", initState);
+    //       await delay(1000);
+    //       initState = localStorage.getItem("initState");
+    //     }
+    //   };
+    //   (async () => {
+    //     await checkInitState();
+    //     chat.value = localStorage.getItem("chat") || "";
+    //     if (chat.value != "") {
+    //       chatArray.value = JSON.parse(chat.value);
+    //       chatArray.value.reverse();
+    //     }
 
-          console.log("initState:", initState);
-          await delay(1000);
-          initState = localStorage.getItem("initState");
-        }
-      };
-      (async () => {
-        await checkInitState();
-        chat.value = localStorage.getItem("chat") || "";
-        if (chat.value != "") {
-          chatArray.value = JSON.parse(chat.value);
-          chatArray.value.reverse();
-        }
-
-        onChainChat.value = localStorage.getItem("onChainChat") || "";
-        if (onChainChat.value != "") {
-          onChainChatArray.value = JSON.parse(onChainChat.value);
-          onChainChatArray.value.reverse();
-        }
-        fullLoading.value = false;
-      })();
-    } else {
-      fullLoading.value = false;
-    }
-
+    //     onChainChat.value = localStorage.getItem("onChainChat") || "";
+    //     if (onChainChat.value != "") {
+    //       onChainChatArray.value = JSON.parse(onChainChat.value);
+    //       onChainChatArray.value.reverse();
+    //     }
+    //     fullLoading.value = false;
+    //   })();
+    // } else {
+    //   fullLoading.value = false;
+    // }
     return {
+      onSubmitSwitchUserPopup,
+      newUserList,
+      getFolderList,
+      getTxtList,
+      newCurrentUser,
+      newDataList,
+      newDataListDetail,
+      newDataListDetailData,
+      newIsEdit,
+      onClosePopup,
+      cardBodyStyleList,
+      upChainData,
+      newChainDataList,
+      getPathData,
+      viewDataVisible,
+      onNewCloseViewPopup,
+      onNewOpenViewPopup,
+      nowViewData,
+
+
+
+
+
+
+
+
+      currentUser,
+      getSign,
+      address,
+      privateKey,
       chatArray,
       onChainChatArray,
       renderChatArray,
@@ -924,7 +1315,7 @@ export default defineComponent({
       isEdit,
       chatData,
       onOpenPopup,
-      onClosePopup,
+      // onClosePopup,
       onDeletePopup,
       onSubmitPopup,
       onToChainPopup,
@@ -953,18 +1344,37 @@ export default defineComponent({
       localUserList,
       onOpenSwitchUserPopup,
       onCloseSwitchUserPopup,
-      onSubmitSwitchUserPopup,
+      // onSubmitSwitchUserPopup,
 
       nodeStatus,
       onNodeStatusChange,
 
       fullLoading,
+      loadingState,
     };
   },
 });
 </script>
 
 <style scoped>
+.cardList{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.example {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* 透明度从0.3增加到0.8 */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
 /* #components-layout-demo-top-side-2 .logo {
   float: left;
   width: 120px;
@@ -1002,7 +1412,7 @@ export default defineComponent({
   display: flex;
   /* padding-top: 24px; */
   /* padding-bottom: 24px; */
-  margin: 0px;
+  /* margin: 10px; */
   padding: 0px;
   /* padding-bottom: 12px; */
   /* background-color: #f3f5f7; */
