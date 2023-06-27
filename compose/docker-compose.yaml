@@ -133,7 +133,7 @@ services:
     depends_on:
       - minio
   metatoc-ui:
-    image: metatoc-ui:latest
+    image: meta42/metatoc-ui:latest
     environment:
       - chatgpt_service_proxy_pass=http://metatoc-ui-chatgpt-proxy:3001
       - blockchain_service_proxy_pass=http://WebService:5000
