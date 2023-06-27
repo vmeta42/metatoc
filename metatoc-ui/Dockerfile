@@ -16,4 +16,4 @@ RUN mkdir -p /usr/share/nginx/html/src/assets
 COPY nginx.template /etc/nginx/conf.d
 EXPOSE 80
 WORKDIR /etc/nginx/conf.d
-ENTRYPOINT envsubst '$chatgpt_service_proxy_pass $blockchain_service_proxy_pass' < nginx.template > default.conf && cat default.conf && nginx -g 'daemon off;'
+ENTRYPOINT envsubst '$chatgpt_service_proxy_pass $blockchain_service_proxy_pass $metatoc_service_proxy_pass' < nginx.template > default.conf && cat default.conf && nginx -g 'daemon off;'

@@ -7,7 +7,7 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    location /api/sendMsg{
+    location /api/sendMsg {
         rewrite ^/api(/.*)?$ $1 break;
         include uwsgi_params;
         proxy_pass $chatgpt_service_proxy_pass;
@@ -16,10 +16,19 @@ server {
         proxy_read_timeout 10s;
     }
 
-    location /api/block{
+    location /api/block {
         rewrite ^/api/block(/.*)?$ $1 break;
         include uwsgi_params;
         proxy_pass $blockchain_service_proxy_pass;
+        proxy_connect_timeout 10s;
+        proxy_send_timeout 10s;
+        proxy_read_timeout 10s;
+    }
+
+     location /api/metatoc-service/v1 {
+        rewrite ^/api(/.*)?$ $1 break;
+        include uwsgi_params;
+        proxy_pass $metatoc_service_proxy_pass;
         proxy_connect_timeout 10s;
         proxy_send_timeout 10s;
         proxy_read_timeout 10s;

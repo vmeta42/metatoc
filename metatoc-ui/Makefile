@@ -10,7 +10,7 @@ run:
 stop:
 	docker stop metatoc-ui
 
-.PHONY: pushDev
+.PHONY: push
 push:
 	docker tag metatoc-ui:latest harbor.dev.21vianet.com/metatoc/metatoc-ui:latest
 	docker push harbor.dev.21vianet.com/metatoc/metatoc-ui:latest

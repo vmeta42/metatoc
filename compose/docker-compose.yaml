@@ -90,7 +90,7 @@ services:
     volumes:
       - ../violas/etc:/usr/src/app/diem-share
     ports:
-      - "2929:5000"
+      - "5000:5000"
     networks:
       violas:
         ipv4_address: 172.18.0.15
@@ -106,19 +106,47 @@ services:
     networks:
       violas:
         ipv4_address: 172.18.0.16
+  minio:
+    image: minio/minio
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    volumes:
+      - ../minio/data:/data
+      - ../minio/config:/root/.minio
+    expose:
+      - "9000"
+    command: ["server", "/data"]
+    networks:
+      violas:
+        ipv4_address: 172.18.0.17
+  metatoc-webservice-for-ui:
+    image: metatoc-webservice-for-ui:0.3
+    environment:
+      - MINIO_ENDPOINT=minio:9000
+      - BLOCKCHAIN_WEBSERVICE_ADDRESS=http://WebService:5000
+    ports:
+      - "8080:8080"
+    networks:
+      violas:
+        ipv4_address: 172.18.0.18
+    depends_on:
+      - minio
   metatoc-ui:
-    image: meta42/metatoc-ui:latest
+    image: metatoc-ui:latest
     environment:
       - chatgpt_service_proxy_pass=http://metatoc-ui-chatgpt-proxy:3001
       - blockchain_service_proxy_pass=http://WebService:5000
+      - metatoc_service_proxy_pass=http://metatoc-webservice-for-ui:8080
     ports:
       - "80:80"
     networks:
       violas:
-        ipv4_address: 172.18.0.17
+        ipv4_address: 172.18.0.19
     depends_on:
       - WebService
       - metatoc-ui-chatgpt-proxy
+      - metatoc-webservice-for-ui
 networks:
   violas:
     ipam:
