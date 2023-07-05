@@ -21,6 +21,14 @@
 ![边缘端的数据采集](https://github.com/vmeta42/metatoc/blob/main/docs/images/Architecture_Violas.png)
 
 ### 安装部署
+#### 安装启动
+- 拉取镜像
+  `make pull`
+- 项目启动
+  `make run`
+- 项目停止
+  `make stop`
+
 ####   CEFCO 
 1、[部署文档](https://github.com/vmeta42/metatoc/tree/main/cefco#readme)
 #### NATS-Kafka 
