@@ -21,13 +21,19 @@
 ![边缘端的数据采集](https://github.com/vmeta42/metatoc/blob/main/docs/images/Architecture_Violas.png)
 
 ### 安装部署
-#### 安装启动
-- 拉取镜像
-  `make pull`
-- 项目启动
-  `make run`
-- 项目停止
-  `make stop`
+#### 使用Make命令进行本地部署
+```shell
+make pull
+```
+从Docker Hub拉取最新的镜像。
+```shell
+make run
+```
+使用Docker Compose创建并运行容器。
+```shell
+make stop
+```
+使用Docker Compose停止运行的容器。
 
 ####   CEFCO 
 1、[部署文档](https://github.com/vmeta42/metatoc/tree/main/cefco#readme)
