@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 from ..canoser import DelegateT, BytesT
 from ..canoser.util import int_list_to_hex
 

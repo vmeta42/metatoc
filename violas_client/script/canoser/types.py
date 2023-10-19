@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 from canoser.int_type import Uint8
 from canoser.tuple_t import TupleT
 from canoser.map_t import MapT

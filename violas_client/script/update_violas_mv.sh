@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 #########################################################################
 # File Name: script.sh
 # Author: ma6174
@@ -16,13 +20,13 @@ git clone https://github.com/vmeta42/metatoc.git
 
 for file in $(ls ./metatoc/move-contracts/compiled/scripts/*.mv)
 do
-	echo $file
-	python3 ./violas_parse_code.py ./violas_data $file
+        echo $file
+        python3 ./violas_parse_code.py ./violas_data $file
 done
 
 
 for file in $(ls ./metatoc/move-contracts/compiled/modules/*.mv)
 do
-	echo $file
-	python3 ./violas_parse_code.py ./violas_data $file
+        echo $file
+        python3 ./violas_parse_code.py ./violas_data $file
 done

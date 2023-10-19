@@ -1,3 +1,7 @@
+-- Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+-- SPDX-License-Identifier: MIT
+
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS transactions;
 

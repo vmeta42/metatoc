@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 from .cursor import Cursor  # noqa: F401
 from .struct import Struct  # noqa: F401
 from .rust_enum import RustEnum  # noqa: F401
