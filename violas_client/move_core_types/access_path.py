@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 from ..canoser import Struct, Uint64, RustEnum, DelegateT
 from .account_address import AccountAddress
 from .identifier import Identifier

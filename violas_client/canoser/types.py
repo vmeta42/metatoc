@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 from .int_type import Uint8
 from .tuple_t import TupleT
 from .map_t import MapT

@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 # FROM python:3.8.13-alpine3.16
 FROM python:3.8.13
 

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 ./diem-swarm -c ./etc --diem-node ./node -n 4
 echo "Copy config"
 

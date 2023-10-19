@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 from canoser.base import Base
 from canoser.int_type import Uint32, Uint8
 import struct

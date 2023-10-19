@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 build:
 	cp -r ../violas_client ./
 	docker build -t meta42/metatoc-webservice .

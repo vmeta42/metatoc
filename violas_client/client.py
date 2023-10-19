@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 from diem.jsonrpc import Client as DiemClient
 from diem import diem_types, utils,  stdlib, ROOT_ADDRESS, TREASURY_ADDRESS
 from diem.diem_types import AccountAddress
