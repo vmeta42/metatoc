@@ -73,6 +73,6 @@ move compile meta42.move scripts.move --mode diem
 如果您在使用过程中遇到任何问题，或是有建设性意见，欢迎给我们提[issues](https://github.com/vmeta42/metatoc/issues)。
 社群交流建设中，敬请期待。
 ### License
-MetaTOC is under the  MIT license. See the License file for [details](https://github.com/vmeta42/metadb/blob/3.9.39.x/LICENSE.txt)。
+MetaTOC is under the  MIT license。
 
 
