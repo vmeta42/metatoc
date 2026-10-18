@@ -1,3 +1,6 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
 FROM golang:1.15-alpine3.13 AS build
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories;\

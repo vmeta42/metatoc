@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 # This compose file defines a single validator node test network,
 # along with a faucet that connects to it over json-rpc.
 # In addition, it offers the following facilities:

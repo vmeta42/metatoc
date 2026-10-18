@@ -1,3 +1,7 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
+
 module gitlab.dev.21vianet.com/liu.hao8/nats-everywhere
 
 go 1.17

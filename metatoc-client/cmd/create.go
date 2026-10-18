@@ -1,12 +1,16 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
 package cmd
 
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/desertbit/grumble"
 	"github.com/nats-io/nats.go"
 	"github.com/vmeta42/metatoc/metatoc-client/config"
-	"net/http"
 )
 
 type Create struct {

@@ -1,10 +1,15 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
+
 package main
 
 import (
-	"gitlab.dev.21vianet.com/liu.hao8/nats-everywhere/server/conf"
-	"gitlab.dev.21vianet.com/liu.hao8/nats-everywhere/server/core"
 	"log"
 	"os"
+
+	"gitlab.dev.21vianet.com/liu.hao8/nats-everywhere/server/conf"
+	"gitlab.dev.21vianet.com/liu.hao8/nats-everywhere/server/core"
 )
 
 var (

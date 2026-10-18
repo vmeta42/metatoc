@@ -1,11 +1,15 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
 package filesync
 
 import (
 	"bytes"
-	"github.com/inspursoft/cefco/pkg/apis/filesync/v1alpha1"
 	"reflect"
 	"testing"
 	"text/template"
+
+	"github.com/inspursoft/cefco/pkg/apis/filesync/v1alpha1"
 )
 
 func TestTpl(t *testing.T) {

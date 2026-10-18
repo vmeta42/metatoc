@@ -1,9 +1,14 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
+
 package core
 
 import (
-	"github.com/nats-io/nats.go"
 	"strings"
 	"time"
+
+	"github.com/nats-io/nats.go"
 )
 
 func (server *NATSBridge) natsError(nc *nats.Conn, sub *nats.Subscription, err error) {

@@ -1,11 +1,15 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
 package cmd
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/desertbit/grumble"
 	"os"
 	"strings"
+
+	"github.com/desertbit/grumble"
 )
 
 func init() {

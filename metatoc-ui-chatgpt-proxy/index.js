@@ -1,3 +1,7 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
+
 import { ChatGPTAPI } from "chatgpt";
 import express from "express";
 import bodyParser from "body-parser";

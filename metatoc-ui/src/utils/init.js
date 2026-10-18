@@ -1,3 +1,7 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
+
 /* eslint-disable no-async-promise-executor */
 import { create, signup } from "./block";
 import { v4 as uuidv4 } from "uuid";

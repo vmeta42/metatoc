@@ -1,3 +1,6 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
 idxGenOut := $(shell grep -l -R "DO NOT EDIT" pkg/apis/)
 idxGenIn:= $(shell grep -l -R -F "// +k8s:" pkg/apis)
 idxSrc := $(shell find cmd pkg controllers -name "*.go")

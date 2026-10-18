@@ -1,3 +1,8 @@
+<!--
+ Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+ SPDX-License-Identifier: MIT
+-->
 <template>
   <a-popover trigger="click" v-model:visible="visible">
     <template #title>

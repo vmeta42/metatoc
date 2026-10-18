@@ -1,12 +1,17 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
+
 package core
 
 import (
 	"encoding/json"
+	"sync"
+	"time"
+
 	"github.com/nats-io/nats.go"
 	"gitlab.dev.21vianet.com/liu.hao8/nats-everywhere/server/conf"
 	"gitlab.dev.21vianet.com/liu.hao8/nats-everywhere/server/logging"
-	"sync"
-	"time"
 )
 
 // Version specifies the command version. This should be set at compile time.

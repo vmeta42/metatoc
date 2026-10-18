@@ -1,14 +1,18 @@
+// Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+// SPDX-License-Identifier: MIT
 package cmd
 
 import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/desertbit/grumble"
 	"github.com/vmeta42/metatoc/metatoc-client/config"
 	"github.com/vmeta42/metatoc/metatoc-client/utils"
-	"net/http"
-	"os"
 )
 
 type Signup struct {

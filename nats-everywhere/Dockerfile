@@ -1,3 +1,7 @@
+# Copyright 2022-2023 The VNET Project Authors. All Rights Reserved.
+
+# SPDX-License-Identifier: MIT
+
 FROM golang:1.17 AS build
 COPY . /go/src/nats-everywhere
 WORKDIR /go/src/nats-everywhere
